@@ -11,7 +11,7 @@
 		android:layout_width="fill_parent"
 		android:layout_height="wrap_content"
 		android:dividerHeight="2px"
-		android:divider="#FFCC00" />
+		android:divider="#000000" />
     
 
 </LinearLayout>

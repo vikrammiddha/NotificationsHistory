@@ -3,6 +3,7 @@ package com.bun.notificationshistory;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -51,27 +52,32 @@ public class Notification_Service extends AccessibilityService {
             dbMap.put("notTime", date);
             dbMap.put("packageName", event.getPackageName().toString());
             
-            Notification notification = (Notification) event.getParcelableData();
-            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            ViewGroup localView = (ViewGroup) inflater.inflate(notification.contentView.getLayoutId(), null);
-            notification.contentView.reapply(getApplicationContext(), localView);
-            
-            ArrayList<TextView> views = new ArrayList<TextView>();
-            getAllTextView(views, localView);
-            for (TextView v: views) {
-                String text = v.getText().toString();
-                if (!text.isEmpty()) {
-                    Log.d("Notification_History", "[Text]                " + text);
-                    message += text + "\n";
-                }
+            try{
+	            Notification notification = (Notification) event.getParcelableData();
+	            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	            ViewGroup localView = (ViewGroup) inflater.inflate(notification.contentView.getLayoutId(), null);
+	            notification.contentView.reapply(getApplicationContext(), localView);
+	            
+	            ArrayList<TextView> views = new ArrayList<TextView>();
+	            getAllTextView(views, localView);
+	            for (TextView v: views) {
+	                String text = v.getText().toString();
+	                if (!text.isEmpty()) {
+	                    Log.d("Notification_History", "[Text]                " + text);
+	                    message += text + "\n";
+	                }
+	            }
+            }catch(Exception e){
+            	message = String.valueOf(event.getText());
             }
-            
-            Date d = new Date(event.getEventTime());
+           
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
-            formatter.setTimeZone(TimeZone.getDefault());
-            String dateFormatted = formatter.format(d);
+            Calendar calendar = Calendar.getInstance();
+            calendar.setTimeInMillis(event.getEventTime());
+            String formattedDate = formatter.format(calendar.getTime());
+           
             
-            dbMap.put("notDate", dateFormatted);
+            dbMap.put("notDate", formattedDate);
             dbMap.put("message", String.valueOf(event.getText()));
             dbMap.put("additionalInfo", message);
             Log.d("Notification_History", "Total Records in DB till now :" + controller.getAllNotifications().size());

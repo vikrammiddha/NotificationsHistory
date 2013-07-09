@@ -53,8 +53,6 @@ public class Notification_Activity extends Activity{
 			showServiceAlert();
 		}
 		
-		IntentFilter intentFilter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
-        registerReceiver(mReceiver, intentFilter);
         	
 	}
 	
@@ -68,7 +66,25 @@ public class Notification_Activity extends Activity{
 	   }
 
 	};
-
+	
+	@Override
+	protected void onPause() {
+		// TODO Auto-generated method stub
+		super.onPause();
+		
+		unregisterReceiver(mReceiver);
+		
+	}
+	
+	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		
+		IntentFilter intentFilter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
+        registerReceiver(mReceiver, intentFilter);
+		
+	}
 	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

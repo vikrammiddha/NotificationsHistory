@@ -19,7 +19,11 @@ public class Notiofication_Detail_Adapter extends BaseAdapter{
 	public void addNotification(Notification n){
 		nList.add(n);
 	}
-
+	
+	public void clearNotifications(){
+		nList.clear();
+	}
+	
 	@Override
 	public int getCount() {
 		return nList.size();
@@ -48,19 +52,26 @@ public class Notiofication_Detail_Adapter extends BaseAdapter{
 		TextView timeTextView = (TextView)v;
 		
 		timeTextView.setText(n.getMessage());
-		if(position%2 == 0){
-			timeTextView.setBackgroundColor(Color.WHITE);
-			timeTextView.setTextColor(Color.BLACK);
-		}else{
-			timeTextView.setBackgroundColor(Color.WHITE);
-			timeTextView.setTextColor(Color.BLACK);
-		}
-		
 		v = view.findViewById(R.id.dateTimeTextViewId);
 		
 		TextView dateTimeTextView = (TextView)v;
 		dateTimeTextView.setText(n.getNotDate());
+		
 		dateTimeTextView.setTextColor(Color.BLACK);
+		timeTextView.setTextColor(Color.BLACK);
+		
+		if(position%2 == 0){
+			timeTextView.setBackgroundColor(Color.WHITE);
+			
+			dateTimeTextView.setBackgroundColor(Color.WHITE);
+		}else{
+			timeTextView.setBackgroundColor(Color.parseColor("#8E92FA"));
+			
+			dateTimeTextView.setBackgroundColor(Color.parseColor("#8E92FA"));
+			
+		}
+		
+		
 		//timeTextView.setTextColor(Color.rgb(255,255,255));
 		//ImageView iv = (ImageView)view.findViewById(R.id.imageView1);
 		//iv.setImageBitmap(c.getPhoto());                                                                                          
