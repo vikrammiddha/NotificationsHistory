@@ -4,6 +4,14 @@ import android.graphics.drawable.Drawable;
 
 public class Notification {
 	
+	String lastActivityDate;
+	
+	public String getLastActivityDate() {
+		return lastActivityDate;
+	}
+	public void setLastActivityDate(String lastActivityDate) {
+		this.lastActivityDate = lastActivityDate;
+	}
 	Drawable appIcon;
 	
 	public Drawable getAppIcon() {

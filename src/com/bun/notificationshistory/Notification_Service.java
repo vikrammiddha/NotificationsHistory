@@ -73,7 +73,7 @@ public class Notification_Service extends AccessibilityService {
            
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             Calendar calendar = Calendar.getInstance();
-            calendar.setTimeInMillis(event.getEventTime());
+            calendar.setTimeInMillis(System.currentTimeMillis());
             String formattedDate = formatter.format(calendar.getTime());
            
             
@@ -81,7 +81,8 @@ public class Notification_Service extends AccessibilityService {
             dbMap.put("message", String.valueOf(event.getText()));
             dbMap.put("additionalInfo", message);
             Log.d("Notification_History", "Total Records in DB till now :" + controller.getAllNotifications().size());
-            controller.insertNotification(dbMap, this);
+            if(message != null && message.indexOf("\n") > 0 && message.split("\n").length > 1)
+            	controller.insertNotification(dbMap, this);
 		}catch(Exception e){
 			 Log.e("NotificationHistory", "Exception in Handlingthe Event : " + e);
 		}

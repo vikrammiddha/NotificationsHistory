@@ -2,6 +2,7 @@ package com.bun.notificationshistory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -190,11 +191,13 @@ public class Notification_Activity extends Activity{
 		Notification n ;
 		ArrayList<HashMap<String, String>> data = controller.getAllNotifications();
 		HashMap<String,String> appPackageMap = new HashMap<String,String>();
+		HashMap<String,String> appLastTimeMap = new HashMap<String,String>();
 		
 		if(data != null && data.size() > 0){
 			Boolean isSectionHeader = true;
 			String initialDate = data.get(0).get("notTime");
-			HashMap<String,Integer> appMap = new HashMap<String,Integer>();
+			LinkedHashMap<String,Integer> appMap = new LinkedHashMap<String,Integer>();
+			
 			Integer counter = 0;
 			
 			for(HashMap<String,String> hm : data){
@@ -214,17 +217,20 @@ public class Notification_Activity extends Activity{
 				if(initialDate.equals(hm.get("notTime"))){
 					if(appMap.get(hm.get("appName")) != null){
 						appMap.put(hm.get("appName"), appMap.get(hm.get("appName")) + 1);
+						appLastTimeMap.put(hm.get("appName"), hm.get("notTime") + "  " +hm.get("notDate"));
 					}else{
 						appMap.put(hm.get("appName") , 1);
 					}
 					
 					if(counter == data.size()){
 						if(appMap.size() > 0){
+							appMap = Utils.sortHashMapByValuesD(appMap);
 							for(String app : appMap.keySet()){
 								Notification nn = new Notification();
 								nn.setAppName(app);
 								nn.setNotificationCount(appMap.get(app));
 								nn.setNotTime(initialDate);
+								nn.setLastActivityDate(appLastTimeMap.get(app));
 								try{
 									
 									Drawable icon;
@@ -246,11 +252,13 @@ public class Notification_Activity extends Activity{
 				}else{
 					isSectionHeader = true;
 					if(appMap.size() > 0){
+						appMap = Utils.sortHashMapByValuesD(appMap);
 						for(String app : appMap.keySet()){
 							Notification nn = new Notification();
 							nn.setAppName(app);							
 							nn.setNotificationCount(appMap.get(app));
 							nn.setNotTime(initialDate);
+							nn.setLastActivityDate(appLastTimeMap.get(app));
 							try{
 								Drawable icon;
 								if(app.equals("Google Talk")){
@@ -269,6 +277,7 @@ public class Notification_Activity extends Activity{
 						}
 					}
 					appMap.clear();
+					appLastTimeMap.clear();
 					initialDate = hm.get("notTime");
 				}
 				

@@ -7,34 +7,52 @@
     <ImageView
         android:id="@+id/appImageViewId"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="45dp"
         android:background="#FFFFFF"
         android:src="@drawable/ic_launcher"
         android:layout_weight="80"
+        android:layout_gravity="left"
          />
 
-    <TextView
-        android:id="@+id/notificationRowTextViewId"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="#FFFFFF"
-        android:text="Row"
-        android:gravity="left"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:textColor="#0F1A5E"
-        android:layout_weight="50"
-         />
-    
+    <LinearLayout android:layout_width="fill_parent"
+    				android:layout_height="wrap_content"
+    				android:orientation="vertical"
+    				android:layout_weight="50">
+	    <TextView
+	        android:id="@+id/notificationRowTextViewId"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:background="#FFFFFF"
+	        android:text="Row"
+	        android:gravity="left"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textColor="#0F1A5E"
+	        
+	         />
+	    
+	    <TextView
+	        android:id="@+id/lastActivityDateId"
+	        android:layout_width="fill_parent"
+	        android:layout_height="fill_parent"
+	        android:background="#FFFFFF"
+	        android:text="Last: 01/03/2013 00:00:00"
+	        android:gravity="left"
+	        android:textAppearance="?android:attr/textAppearanceSmall"
+	        android:textColor="#0F1A5E"
+	        android:layout_weight="50"/>
+	         
+    </LinearLayout>
      <TextView
         android:id="@+id/notificationCountId"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="#FFFFFF"
         android:text="Row"
-        android:gravity="center"
+        android:gravity="right"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#0F1A5E" 
         android:layout_weight="70"
+        android:paddingRight="20dp"
         />
 
 </LinearLayout>
