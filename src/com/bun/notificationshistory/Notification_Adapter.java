@@ -107,7 +107,7 @@ public class Notification_Adapter extends BaseAdapter{
 			
 			TextView lastActivityDateText = (TextView)v;
 			
-			lastActivityDateText.setText("Last: " + n.getLastActivityDate() != null ? n.getLastActivityDate() : "- * -");
+			lastActivityDateText.setText( n.getLastActivityDate() != null ? ("Last: " + n.getLastActivityDate())  : "- * -");
 			
 			//timeTextView.setTextColor(Color.rgb(255,255,255));
 		}

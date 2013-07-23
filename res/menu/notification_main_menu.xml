@@ -3,6 +3,11 @@
     <!-- Single menu item 
          Set id, icon and Title for each menu item
     -->
+    <item android:id="@+id/group_notifications"
+         
+          android:title="Group by Apps"
+           />
+    
     <item android:id="@+id/menu_clear"
          
           android:title="Clear All Notifications" />

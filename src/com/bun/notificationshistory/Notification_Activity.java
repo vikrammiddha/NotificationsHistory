@@ -47,7 +47,7 @@ public class Notification_Activity extends Activity{
 		setContentView(R.layout.notification_main);
 		adapter = new Notification_Adapter();
 		layout = (ListView) findViewById(R.id.notificationsListViewId);
-		controller = new DBController(this);
+		controller = new DBController(this);	
 		populateNotificationAdapter(layout);
 		Boolean serviceStatus = isAccessibilityEnabled(this, accServiceId);
 		if(serviceStatus == false){
@@ -94,6 +94,30 @@ public class Notification_Activity extends Activity{
 		return true;
 	}
 	
+	public boolean onPrepareOptionsMenu (Menu menu) {    
+	    
+		for(int i=0; i< menu.size(); i++){
+			MenuItem mi = menu.getItem(i);
+			if(i == 0){
+				
+				HashMap<String,String> preferences = controller.getAllPreferences();
+				
+				if("GroupByDay".equals(preferences.get("NotificationGroupBy"))){
+					
+					mi.setTitle("Group by Apps");
+					
+				}else if("GroupByApp".equals(preferences.get("NotificationGroupBy"))){
+					
+					mi.setTitle("Group by Days");
+					
+				}
+				
+			}
+		}
+			        
+	    return super.onPrepareOptionsMenu(menu);
+	}
+	
 	 @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -106,7 +130,10 @@ public class Notification_Activity extends Activity{
  
         case R.id.meni_Exit:
         		        
- 
+        	
+        case R.id.group_notifications:
+        	updateGroupNotificationPreference();
+        	
         default:
             return super.onOptionsItemSelected(item);
         }
@@ -188,6 +215,36 @@ public class Notification_Activity extends Activity{
 	}
 	
 	private void populateNotificationAdapter(ListView layout){
+
+		HashMap<String,String> preferences = controller.getAllPreferences();
+		
+		if("GroupByDay".equals(preferences.get("NotificationGroupBy"))){
+			
+			populateAdapterGroupedByDay();
+			
+		}else if("GroupByApp".equals(preferences.get("NotificationGroupBy"))){
+			
+			populateAdapterGroupedByApp();
+			
+		}
+		
+		
+		layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			
+		    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		    	Notification n = (Notification)adapter.getItem(position);
+		    	Intent intent=new Intent(getApplicationContext(), Notification_Details.class);
+		    	intent.putExtra("date", n.getNotTime());
+		    	intent.putExtra("app", n.getAppName());
+		    	if(n.getIsSectionHeader() == null)
+		    		startActivity(intent);
+		    }
+		});
+		layout.setAdapter(adapter);
+		
+	}
+	
+	private void populateAdapterGroupedByDay(){
 		Notification n ;
 		ArrayList<HashMap<String, String>> data = controller.getAllNotifications();
 		HashMap<String,String> appPackageMap = new HashMap<String,String>();
@@ -285,21 +342,68 @@ public class Notification_Activity extends Activity{
 		}else{
 			populateDefaultMessage(layout);
 		}
+	}
+	
+	
+	
+	private void populateAdapterGroupedByApp(){
 		
-		layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+		ArrayList<HashMap<String, String>> data = controller.getAllNotifications();
+		HashMap<String,String> appPackageMap = new HashMap<String,String>();
+		HashMap<String,String> appLastTimeMap = new HashMap<String,String>();
+		
+		if(data != null && data.size() > 0){
 			
-		    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-		    	Notification n = (Notification)adapter.getItem(position);
-		    	Intent intent=new Intent(getApplicationContext(), Notification_Details.class);
-		    	intent.putExtra("date", n.getNotTime());
-		    	intent.putExtra("app", n.getAppName());
-		    	if(n.getIsSectionHeader() == null)
-		    		startActivity(intent);
-		    }
-		});
-		layout.setAdapter(adapter);
+			LinkedHashMap<String,Integer> appMap = new LinkedHashMap<String,Integer>();
+			
+			Integer counter = 0;
+			
+			for(HashMap<String,String> hm : data){
+				
+				appPackageMap.put(hm.get("appName"), hm.get("packageName"));
+				
+				if(appMap.get(hm.get("appName")) != null){
+					appMap.put(hm.get("appName"), appMap.get(hm.get("appName")) + 1);
+					appLastTimeMap.put(hm.get("appName"), hm.get("notTime") + "  " +hm.get("notDate"));
+				}else{
+					appMap.put(hm.get("appName") , 1);
+				}
+				
+			}
+			
+			if(appMap.size() > 0){
+				appMap = Utils.sortHashMapByValuesD(appMap);
+				for(String app : appMap.keySet()){
+					Notification nn = new Notification();
+					nn.setAppName(app);
+					nn.setNotificationCount(appMap.get(app));					
+					nn.setLastActivityDate(appLastTimeMap.get(app));
+					try{
+						
+						Drawable icon;
+						if(app.equals("Google Talk")){
+							icon = getResources().getDrawable( R.drawable.googletalk );
+						}else{
+							icon = this.getPackageManager().getApplicationIcon(appPackageMap.get(app));
+						}
+						nn.setAppIcon(icon);
+					}
+					catch (PackageManager.NameNotFoundException ne)
+					 {
+
+					 }
+					adapter.addNotification(nn);
+				}
+			}
+		}else{
+			populateDefaultMessage(layout);
+		}
+		
 		
 	}
+
+	
+	
 	
 	private void populateDefaultMessage(ListView layout){
 		Notification n1 = new Notification();
@@ -329,6 +433,32 @@ public class Notification_Activity extends Activity{
 	    }
 
 	    return false;
+	}
+	
+	private void updateGroupNotificationPreference(){
+		
+		
+		
+		HashMap<String,String> map = new HashMap<String,String>();
+		HashMap<String,String> preferences = controller.getAllPreferences();
+		
+		if("GroupByDay".equals(preferences.get("NotificationGroupBy"))){
+			
+			map.put("NotificationGroupBy", "GroupByApp");
+			
+		}else if("GroupByApp".equals(preferences.get("NotificationGroupBy"))){
+			
+			map.put("NotificationGroupBy", "GroupByDay");
+			
+		}
+		
+		controller.updatePreferences(map);
+		
+		adapter.clearNotifications();
+    	populateNotificationAdapter(layout);
+    	adapter.notifyDataSetChanged();
+    	layout.setAdapter(adapter);
+		
 	}
 
 }

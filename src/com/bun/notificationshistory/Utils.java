@@ -27,7 +27,7 @@ public class Utils {
 			        Integer comp1 = passedMap.get(key);
 			        Integer comp2 = val;
 	
-			        if (comp1 == comp2){
+			        if (comp1.equals(comp2)){
 			            passedMap.remove(key);
 			            mapKeys.remove(key);
 			            sortedMap.put((String)key, Integer.valueOf(val));
@@ -40,6 +40,7 @@ public class Utils {
 		//passedMap.putAll(sortedMap);
 		return sortedMap; 
 	}
-
+	
+	
 
 }
