@@ -48,11 +48,24 @@
         android:layout_height="fill_parent"
         android:background="#FFFFFF"
         android:text="Row"
-        android:gravity="right"
+        android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#0F1A5E" 
-        android:layout_weight="70"
+        android:layout_weight="85"
         android:paddingRight="20dp"
         />
+     
+     <ImageView
+        android:id="@+id/trashImageViewId"
+        android:layout_width="fill_parent"
+        android:layout_height="25dp"
+        android:background="#FFFFFF"        
+        android:layout_weight="85"
+        android:layout_gravity="center"
+        android:src="@drawable/trash"
+        android:onClick="ignoreApp"
+        android:clickable="true"
+         />
+     
 
 </LinearLayout>

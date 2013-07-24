@@ -2,6 +2,8 @@ package com.bun.notificationshistory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
  
 import android.util.Log;
  
@@ -17,7 +19,7 @@ public class DBController  extends SQLiteOpenHelper {
   Context ctx;
  
   public DBController(Context applicationcontext) {
-    super(applicationcontext, "notificationhistorysqlite.db", null, 4);
+    super(applicationcontext, "notificationhistorysqlite.db", null, 5);
     Log.d(LOGCAT,"Created");
     ctx = applicationcontext;
   }
@@ -29,8 +31,12 @@ public class DBController  extends SQLiteOpenHelper {
     				"appName String, packageName String, additionalInfo Text)";
     
     String prefTableQuer = "CREATE TABLE preferences (key Text, value Text)";
+    
+    String ignoreTableQuery = "CREATE TABLE ignore_list (appName Text)";
+    
     database.execSQL(query);
     database.execSQL(prefTableQuer);
+    database.execSQL(ignoreTableQuery);
     
     populateDefaultPreferences(database);
     
@@ -41,11 +47,50 @@ public class DBController  extends SQLiteOpenHelper {
     String query;
     query = "DROP TABLE IF EXISTS not_hist";
     String prefQuery = "DROP TABLE IF EXISTS preferences";
+    String ignoreTableQuery = "DROP TABLE IF EXISTS ignore_list";
+    
     database.execSQL(query);
     database.execSQL(prefQuery);
+    database.execSQL(ignoreTableQuery);
     onCreate(database);
   }
  
+  
+  public void insertIgnoredApps(HashSet<String> appSet, Context context){
+		SQLiteDatabase database = this.getWritableDatabase();
+	    ContentValues values = new ContentValues();
+	    for(String app : appSet){
+		    values.put("appName", app);	    
+		    database.insert("ignore_list", null, values);
+		    values.clear();
+	    }
+	    database.close();
+	    //context.sendBroadcast(new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
+  }
+  
+  public void deleteIgnoredApps(Set<String> appSet){
+	  	SQLiteDatabase database = this.getWritableDatabase();	
+		
+		for(String app : appSet){			
+			database.delete("ignore_list",  "appName = " + app, null);			
+		}
+		  
+  }
+  
+  public HashSet<String> getAllIgnoredApps(){
+	  	HashSet<String> ignoredApps = new HashSet<String>();
+	  	
+	    String selectQuery = "SELECT  * FROM ignore_list ";
+	    SQLiteDatabase database = this.getWritableDatabase();
+	    Cursor cursor = database.rawQuery(selectQuery, null);
+	    if (cursor.moveToFirst()) {
+	    	do {
+	    		ignoredApps.add(cursor.getString(0));	        
+	      } while (cursor.moveToNext());
+	    }
+	    return ignoredApps;
+  }
+  
   public void insertNotification(HashMap<String, String> queryValues, Context context) {
     SQLiteDatabase database = this.getWritableDatabase();
     ContentValues values = new ContentValues();
@@ -93,7 +138,7 @@ public class DBController  extends SQLiteOpenHelper {
   public ArrayList<HashMap<String, String>> getAllNotifications() {
     ArrayList<HashMap<String, String>> wordList;
     wordList = new ArrayList<HashMap<String, String>>();
-    String selectQuery = "SELECT  * FROM not_hist order by notTime desc";
+    String selectQuery = "SELECT  * FROM not_hist order by notId desc";
     SQLiteDatabase database = this.getWritableDatabase();
     Cursor cursor = database.rawQuery(selectQuery, null);
     if (cursor.moveToFirst()) {

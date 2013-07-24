@@ -109,6 +109,12 @@ public class Notification_Adapter extends BaseAdapter{
 			
 			lastActivityDateText.setText( n.getLastActivityDate() != null ? ("Last: " + n.getLastActivityDate())  : "- * -");
 			
+			v = view.findViewById(R.id.trashImageViewId);
+			
+			ImageView trashImageView = (ImageView)v;
+			
+			trashImageView.setTag(n.getAppName());
+			
 			//timeTextView.setTextColor(Color.rgb(255,255,255));
 		}
 		

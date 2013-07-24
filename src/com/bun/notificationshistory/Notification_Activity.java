@@ -2,6 +2,7 @@ package com.bun.notificationshistory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -24,10 +25,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -38,6 +41,7 @@ public class Notification_Activity extends Activity{
 	DBController controller;
 	ListView layout;
 	private String accServiceId = "com.bun.notificationshistory/.Notification_Service";
+	private Context ctx;
 	
 		
 	@Override
@@ -46,7 +50,7 @@ public class Notification_Activity extends Activity{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.notification_main);
 		adapter = new Notification_Adapter();
-		layout = (ListView) findViewById(R.id.notificationsListViewId);
+		layout = (ListView) findViewById(R.id.notificationsListViewId);		
 		controller = new DBController(this);	
 		populateNotificationAdapter(layout);
 		Boolean serviceStatus = isAccessibilityEnabled(this, accServiceId);
@@ -54,9 +58,14 @@ public class Notification_Activity extends Activity{
 			showServiceAlert();
 		}
 		
+		ctx = this;
         	
 	}
 	
+	public void ignoreApp(View view){
+		ignoreAppWarning(view);
+		//Toast.makeText(getApplicationContext(), view.getTag().toString(), Toast.LENGTH_SHORT).show();
+	}
 
 	private DatabaseChangedReceiver mReceiver = new DatabaseChangedReceiver() {
 	   public void onReceive(Context context, Intent intent) {
@@ -180,6 +189,50 @@ public class Notification_Activity extends Activity{
 		alertDialog2.show();
 	}
 	
+	private void ignoreAppWarning(final View view){
+		AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
+		        Notification_Activity.this);
+
+		// Setting Dialog Title
+		alertDialog2.setTitle("Warning");
+
+		// Setting Dialog Message
+		alertDialog2.setMessage(view.getTag().toString() + " App will be moved to Ignore List.");
+
+		// Setting Icon to Dialog
+		//alertDialog2.setIcon(R.drawable.delete);
+
+		// Setting Positive "Yes" Btn
+		alertDialog2.setPositiveButton("Ok",
+		        new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		            	if(layout == null){
+		            		layout = (ListView) findViewById(R.id.notificationsListViewId);
+		            	}
+		            	HashSet<String> ignoreAppSet = new HashSet<String>();
+		            	ignoreAppSet.add(view.getTag().toString());
+		            	controller.insertIgnoredApps(ignoreAppSet, ctx); 
+		            	
+		            	adapter.clearNotifications();
+		            	populateNotificationAdapter(layout);
+		            	adapter.notifyDataSetChanged();
+			        	layout.setAdapter(adapter);
+			        	
+		            }
+		        });
+		// Setting Negative "NO" Btn
+		alertDialog2.setNegativeButton("Cancel",
+		        new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		               
+		                dialog.cancel();
+		            }
+		        });
+
+		// Showing Alert Dialog
+		alertDialog2.show();
+	}
+	
 	private void showServiceAlert(){
 		AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
 		        Notification_Activity.this);
@@ -249,6 +302,7 @@ public class Notification_Activity extends Activity{
 		ArrayList<HashMap<String, String>> data = controller.getAllNotifications();
 		HashMap<String,String> appPackageMap = new HashMap<String,String>();
 		HashMap<String,String> appLastTimeMap = new HashMap<String,String>();
+		HashSet<String> ignoredApps = controller.getAllIgnoredApps();
 		
 		if(data != null && data.size() > 0){
 			Boolean isSectionHeader = true;
@@ -273,10 +327,10 @@ public class Notification_Activity extends Activity{
 				
 				if(initialDate.equals(hm.get("notTime"))){
 					if(appMap.get(hm.get("appName")) != null){
-						appMap.put(hm.get("appName"), appMap.get(hm.get("appName")) + 1);
-						appLastTimeMap.put(hm.get("appName"), hm.get("notTime") + "  " +hm.get("notDate"));
+						appMap.put(hm.get("appName"), appMap.get(hm.get("appName")) + 1);						
 					}else{
 						appMap.put(hm.get("appName") , 1);
+						appLastTimeMap.put(hm.get("appName"), hm.get("notTime") + "  " +hm.get("notDate"));
 					}
 					
 					if(counter == data.size()){
@@ -302,7 +356,8 @@ public class Notification_Activity extends Activity{
 								 {
 
 								 }
-								adapter.addNotification(nn);
+								if(!ignoredApps.contains(app))
+									adapter.addNotification(nn);
 							}
 						}
 					}
@@ -330,7 +385,8 @@ public class Notification_Activity extends Activity{
 							 {
 
 							 }
-							adapter.addNotification(nn);
+							if(!ignoredApps.contains(app))
+								adapter.addNotification(nn);
 						}
 					}
 					appMap.clear();
@@ -351,22 +407,21 @@ public class Notification_Activity extends Activity{
 		ArrayList<HashMap<String, String>> data = controller.getAllNotifications();
 		HashMap<String,String> appPackageMap = new HashMap<String,String>();
 		HashMap<String,String> appLastTimeMap = new HashMap<String,String>();
+		HashSet<String> ignoredApps = controller.getAllIgnoredApps();
 		
 		if(data != null && data.size() > 0){
 			
-			LinkedHashMap<String,Integer> appMap = new LinkedHashMap<String,Integer>();
-			
-			Integer counter = 0;
+			LinkedHashMap<String,Integer> appMap = new LinkedHashMap<String,Integer>();			
 			
 			for(HashMap<String,String> hm : data){
 				
 				appPackageMap.put(hm.get("appName"), hm.get("packageName"));
 				
 				if(appMap.get(hm.get("appName")) != null){
-					appMap.put(hm.get("appName"), appMap.get(hm.get("appName")) + 1);
-					appLastTimeMap.put(hm.get("appName"), hm.get("notTime") + "  " +hm.get("notDate"));
+					appMap.put(hm.get("appName"), appMap.get(hm.get("appName")) + 1);					
 				}else{
 					appMap.put(hm.get("appName") , 1);
+					appLastTimeMap.put(hm.get("appName"), hm.get("notTime") + "  " +hm.get("notDate"));
 				}
 				
 			}
@@ -392,7 +447,8 @@ public class Notification_Activity extends Activity{
 					 {
 
 					 }
-					adapter.addNotification(nn);
+					if(!ignoredApps.contains(app))
+						adapter.addNotification(nn);
 				}
 			}
 		}else{
@@ -460,5 +516,6 @@ public class Notification_Activity extends Activity{
     	layout.setAdapter(adapter);
 		
 	}
+		
 
 }

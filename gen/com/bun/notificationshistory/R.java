@@ -25,22 +25,24 @@ public final class R {
         public static final int googletalk=0x7f020001;
         public static final int ic_launcher=0x7f020002;
         public static final int logo=0x7f020003;
+        public static final int trash=0x7f020004;
     }
     public static final class id {
-        public static final int action_settings=0x7f08000a;
+        public static final int action_settings=0x7f08000b;
         public static final int appImageViewId=0x7f080005;
         public static final int dateTimeTextViewId=0x7f080002;
-        public static final int group_notifications=0x7f08000b;
+        public static final int group_notifications=0x7f08000c;
         public static final int lastActivityDateId=0x7f080007;
-        public static final int meni_Exit=0x7f08000d;
-        public static final int menu_clear=0x7f08000c;
+        public static final int meni_Exit=0x7f08000e;
+        public static final int menu_clear=0x7f08000d;
         public static final int notificationCountId=0x7f080008;
         public static final int notificationRowTextViewId=0x7f080006;
         public static final int notificationsDetailsListViewId=0x7f080003;
         public static final int notificationsListViewId=0x7f080004;
         public static final int notoficationRowDetailId=0x7f080000;
         public static final int notoficationRowDetailTextViewId=0x7f080001;
-        public static final int sectionHeaderTextViewId=0x7f080009;
+        public static final int sectionHeaderTextViewId=0x7f08000a;
+        public static final int trashImageViewId=0x7f080009;
     }
     public static final class layout {
         public static final int activity_notification__service=0x7f030000;
