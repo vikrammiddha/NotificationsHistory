@@ -56,12 +56,12 @@ public class Ignored_Apps_Adapter extends BaseAdapter{
 					R.layout.ignored_apps_row, parent, false);
 		}
 		View v = view.findViewById(R.id.ignoredAppIconImageViewId);
-		ImageView imageView = (ImageView)v;
+		final ImageView imageView = (ImageView)v;
 		
 		imageView.setImageDrawable(n.getAppIcon());
 		
 		v = view.findViewById(R.id.ignoredAppNameTextViewId);
-		TextView appTextView = (TextView)v;
+		final TextView appTextView = (TextView)v;
 		
 		appTextView.setText(n.getAppName());
 		
@@ -77,9 +77,15 @@ public class Ignored_Apps_Adapter extends BaseAdapter{
 	        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 	            if(isChecked ){
 	            	n.setIsRowChecked(true);
+	            	appTextView.setBackgroundColor(Color.parseColor("#0099FF"));
+	            	cb.setBackgroundColor(Color.parseColor("#0099FF"));
+	            	imageView.setBackgroundColor(Color.parseColor("#0099FF"));
 	            }else
 	            {
 	            	n.setIsRowChecked(false);
+	            	appTextView.setBackgroundColor(Color.WHITE);
+	            	cb.setBackgroundColor(Color.WHITE);
+	            	imageView.setBackgroundColor(Color.WHITE);
 	            }
 	        }
 	    });

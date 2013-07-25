@@ -5,9 +5,12 @@ import java.util.HashSet;
 
 import android.app.Activity;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.View;
+import android.view.WindowManager;
+import android.widget.AbsListView.LayoutParams;
 import android.widget.ListView;
 
 public class Ignored_Apps_Activity extends Activity{
@@ -20,6 +23,8 @@ public class Ignored_Apps_Activity extends Activity{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.ignored_apps);
+		getWindow().setLayout(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
+				
 		adapter = new Ignored_Apps_Adapter();
 		layout = (ListView) findViewById(R.id.ignoredAppsListViewId);		
 		controller = new DBController(this);
@@ -37,11 +42,14 @@ public class Ignored_Apps_Activity extends Activity{
 		
 		if(ignoredApps.size() > 0){
 			controller.deleteIgnoredApps(ignoredApps);        	
-        	adapter.clearNotifications();
-        	populateListView();
-        	adapter.notifyDataSetChanged();
-        	layout.setAdapter(adapter);
+        	//adapter.clearNotifications();
+        	//populateListView();
+        	//adapter.notifyDataSetChanged();
+        	//layout.setAdapter(adapter);
+			
 		}
+		
+		finish();
 		
 	}
 

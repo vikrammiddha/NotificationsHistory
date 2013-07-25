@@ -100,13 +100,14 @@ public class Notification_Service extends AccessibilityService {
 	        mLastMessage.clear();
 	        mLastTimeStamp.clear();
 	        controller = new DBController(this);
+	        Log.d("NotificationHistory", "notification service started.");
 	        
-			AccessibilityServiceInfo info = new AccessibilityServiceInfo();
-			info.feedbackType = 1;
-			info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
-			info.notificationTimeout = 100; 
-			info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
-			setServiceInfo(info);
+			//AccessibilityServiceInfo info = new AccessibilityServiceInfo();
+			//info.feedbackType = 1;
+			//info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
+			//info.notificationTimeout = 100; 
+			//info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
+			//setServiceInfo(info);
 		}catch(Exception e){
 			Log.e("NotificationHistory", "Failed to configure accessibility service", e);
 		}

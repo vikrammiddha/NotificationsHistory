@@ -9,11 +9,14 @@ import java.util.List;
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import android.graphics.drawable.Drawable;
@@ -64,8 +67,82 @@ public class Notification_Activity extends Activity{
 		}
 		
 		ctx = this;
+		
+		if(isSamsungPhoneWithTTS(ctx) && controller.getAllPreferences().get("FirstTimeTTSWarning").equals("No")){
+			
+			alertForSamsungTTS();			
+			HashMap<String,String> prefMap = new HashMap<String,String>();
+			prefMap.put("FirstTimeTTSWarning", "Yes");
+			controller.updatePreferences(prefMap);
+			
+		}
 		registerForContextMenu(layout);
         	
+	}
+	
+	private void alertForSamsungTTS(){
+		AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
+		        Notification_Activity.this);
+
+		// Setting Dialog Title
+		alertDialog2.setTitle("Warning");
+
+		// Setting Dialog Message
+		alertDialog2.setMessage("Turn off the Talk back services for unexpected behaviour. Click on Yes to DISABLE the service.");
+
+		// Setting Icon to Dialog
+		//alertDialog2.setIcon(R.drawable.delete);
+
+		// Setting Positive "Yes" Btn
+		alertDialog2.setPositiveButton("YES",
+		        new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		            	Intent intent = new Intent();
+		    			intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+		    			Uri uri = Uri.fromParts("package", "com.google.android.tts",
+		    			        null);
+		    			intent.setData(uri);
+		    			startActivity(intent);
+		    			
+		    			Intent intent1 = new Intent();
+		    			intent1.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+		    			Uri uri1 = Uri.fromParts("package", "com.samsung.SMT",
+		    			        null);
+		    			intent1.setData(uri1);
+		    			startActivity(intent1);
+			        	
+		            }
+		        });
+		// Setting Negative "NO" Btn
+		alertDialog2.setNegativeButton("NO",
+		        new DialogInterface.OnClickListener() {
+		            public void onClick(DialogInterface dialog, int which) {
+		               
+		                dialog.cancel();
+		            }
+		        });
+
+		// Showing Alert Dialog
+		alertDialog2.show();
+
+	}
+	
+	public boolean isSamsungPhoneWithTTS(Context context) {
+
+	    boolean retour = false;
+
+	    try {
+	        @SuppressWarnings("unused")
+	        ApplicationInfo info = context.getPackageManager()
+	                .getApplicationInfo("com.samsung.SMT", 0);
+	        retour = true;
+	    } catch (PackageManager.NameNotFoundException e) {
+	        retour = false;
+	    }
+	    
+	    
+
+	    return true;
 	}
 	
 	@Override

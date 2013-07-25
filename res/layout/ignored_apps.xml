@@ -8,7 +8,7 @@
     <ListView
 		android:id="@+id/ignoredAppsListViewId"
 		android:layout_width="fill_parent"
-		android:layout_height="fill_parent" 
+		android:layout_height="400dp" 
 		android:divider="#0C0A42"
 		android:dividerHeight="3px"
 		android:layout_weight="10"
@@ -16,10 +16,12 @@
     
     <Button
         android:id="@+id/removeIgnoredAppsButtonId"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="fill_parent"
         android:layout_weight="90"
         android:text="Removed Ignored Apps"
-        android:onClick="removeIgnoredApps" />
+        android:onClick="removeIgnoredApps"
+        android:layout_gravity="center"
+        />
 
 </LinearLayout>

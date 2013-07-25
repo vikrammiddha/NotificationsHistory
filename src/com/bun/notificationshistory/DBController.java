@@ -19,7 +19,7 @@ public class DBController  extends SQLiteOpenHelper {
   Context ctx;
  
   public DBController(Context applicationcontext) {
-    super(applicationcontext, "notificationhistorysqlite.db", null, 5);
+    super(applicationcontext, "notificationhistorysqlite.db", null, 7);
     Log.d(LOGCAT,"Created");
     ctx = applicationcontext;
   }
@@ -34,9 +34,9 @@ public class DBController  extends SQLiteOpenHelper {
     
     String ignoreTableQuery = "CREATE TABLE ignore_list (appName Text)";
     
-    database.execSQL(query);
+    //database.execSQL(query);
     database.execSQL(prefTableQuer);
-    database.execSQL(ignoreTableQuery);
+    //database.execSQL(ignoreTableQuery);
     
     populateDefaultPreferences(database);
     
@@ -49,9 +49,9 @@ public class DBController  extends SQLiteOpenHelper {
     String prefQuery = "DROP TABLE IF EXISTS preferences";
     String ignoreTableQuery = "DROP TABLE IF EXISTS ignore_list";
     
-    database.execSQL(query);
+    //database.execSQL(query);
     database.execSQL(prefQuery);
-    database.execSQL(ignoreTableQuery);
+    //database.execSQL(ignoreTableQuery);
     onCreate(database);
   }
  
@@ -249,14 +249,17 @@ public class DBController  extends SQLiteOpenHelper {
 		
 		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("NotificationGroupBy", "GroupByDay");
+		map.put("FirstTimeTTSWarning", "No");
 		
 		ContentValues values = new ContentValues();
 		for(String key : map.keySet()){
 			values.put("key", key);
 		    values.put("value", map.get(key));
+		    database.insert("preferences", null, values);
+		    values.clear();
 		}
 	    
 		
-		database.insert("preferences", null, values);
+		//database.insert("preferences", null, values);
 	}
 }

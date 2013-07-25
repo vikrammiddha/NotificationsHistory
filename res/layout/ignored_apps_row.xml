@@ -23,7 +23,7 @@
         android:background="#FFFFFF"        
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceSmall"          
-        android:layout_weight="30"
+        android:layout_weight="40"
          />
     
     <CheckBox
@@ -31,8 +31,8 @@
            android:layout_width="fill_parent"
            android:layout_height="fill_parent"
            android:text="" 
-           android:layout_weight="90"
-           android:layout_gravity="center"
+           android:layout_weight="80"
+           android:layout_gravity="left"
    	 />
 	         
     
