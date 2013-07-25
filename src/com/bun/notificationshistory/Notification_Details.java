@@ -8,7 +8,9 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.ListView;
 
 
@@ -47,7 +49,8 @@ public class Notification_Details extends Activity{
 		controller = new DBController(this);
 		populateNotificationDetails(layout);
 		IntentFilter intentFilter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
-        registerReceiver(mReceiver, intentFilter);
+        registerReceiver(mReceiver, intentFilter);        
+        layout.setSelector(R.drawable.listselector);
 	}
 	
 	private DatabaseChangedReceiver mReceiver = new DatabaseChangedReceiver() {
@@ -76,23 +79,33 @@ public class Notification_Details extends Activity{
 				
 				String message = "";
 				
-				message = getCleanedMessage(hm.get("additionalInfo"));
+				message = getMessageBody(hm);
 				
-				if(message == null || message.equals("")){
-					message = hm.get("additionalInfo");
-				}
-				
-				//message = hm.get("additionalInfo").replaceAll("\n", " ");
-				
-				if(message.length() > 100){
-					message = message.substring(0, 100);
-				}
 				n.setMessage(message);
-				n.setNotDate((hm.get("additionalInfo") != null && hm.get("additionalInfo").indexOf("\n") > 0)? (hm.get("additionalInfo").split("\n")[1]) : "");
+				
+				String sender = getSender(hm, 0);
+				
+				if(sender == null || sender.trim().length() == 0){
+					sender = getSender(hm, 1);
+				}
+				
+				if(sender == null || sender.trim().length() == 0){
+					continue;
+				}
+				
+				n.setSender(sender);
+				n.setNotDate(hm.get("notTime") + "  " + hm.get("notDate"));
+				Drawable icon;
+				if(hm.get("appName").equals("Google Talk")){
+					icon = getResources().getDrawable( R.drawable.googletalk );
+				}else{
+					icon = this.getPackageManager().getApplicationIcon(hm.get("packageName"));
+				}
+				n.setAppIcon(icon);
 				
 				adapter.addNotification(n);
 			}catch(Exception e){
-				
+				Log.e("Notification_Details", "Exception in Handlingthe Event : " + e);
 			}
 		}
 		
@@ -100,19 +113,59 @@ public class Notification_Details extends Activity{
 		
 	}
 	
-	private String getCleanedMessage(String message){
+	private String getSender(HashMap<String,String> hm, Integer bol){
 		
 		StringBuilder retMessage = new StringBuilder("");
-		String[] strArr = message.split("\n");
 		
-		for(Integer i = 0; i< strArr.length ;i++){
-			if(i == 1){
-				continue;
+		if(bol == 0){
+		
+			String[] strArr = hm.get("message").split(":");
+			
+			for(Integer i = 0; i< strArr.length ;i++){
+				if(i == 0){
+					retMessage.append(strArr[i]).append(" ");
+				}			
 			}
-			retMessage.append(strArr[i]).append(" ");
+		}else{
+			
+			String[] strArr = hm.get("additionalInfo").split("\n");
+			
+			for(Integer i = 0; i< strArr.length ;i++){
+				if(i == 0){
+					retMessage.append(strArr[i]).append(" ");
+				}			
+			}
+			
 		}
 		
-		return retMessage.toString();
+		String retString = retMessage.toString().replaceAll("\\[", "").replaceAll("\\]", "");
+				
+		return retString;
+		
+		
+	}
+	
+	private String getMessageBody(HashMap<String,String> hm){
+		
+		StringBuilder retMessage = new StringBuilder("");
+		String[] strArr = hm.get("additionalInfo").split("\n");
+		
+		for(Integer i = 0; i< strArr.length ;i++){
+			if(i == 2){
+				retMessage.append(strArr[i]).append(" ");
+			}
+		}
+			
+		
+		String message = retMessage.toString();		
+
+		if(message.length() > 100){
+			message = message.substring(0, 100);
+		}
+		
+		message += "\n\n" + hm.get("notTime") + "  " + hm.get("notDate");
+
+		return message;
 	}
 
 }

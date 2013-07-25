@@ -18,19 +18,24 @@ import android.content.pm.PackageManager;
 
 import android.graphics.drawable.Drawable;
 
+
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.provider.Settings.SettingNotFoundException;
 
 
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.View.OnClickListener;
+import android.view.ContextMenu.ContextMenuInfo;
+
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -40,7 +45,7 @@ public class Notification_Activity extends Activity{
 	Notification_Adapter adapter;
 	DBController controller;
 	ListView layout;
-	private String accServiceId = "com.bun.notificationshistory/.Notification_Service";
+	private String accServiceId = "com.bun.notificationshistory/com.bun.notificationshistory.Notification_Service";
 	private Context ctx;
 	
 		
@@ -59,13 +64,63 @@ public class Notification_Activity extends Activity{
 		}
 		
 		ctx = this;
+		registerForContextMenu(layout);
         	
 	}
 	
-	public void ignoreApp(View view){
-		ignoreAppWarning(view);
-		//Toast.makeText(getApplicationContext(), view.getTag().toString(), Toast.LENGTH_SHORT).show();
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v,
+			ContextMenuInfo menuInfo) {
+		// TODO Auto-generated method stub
+		super.onCreateContextMenu(menu, v, menuInfo);
+		AdapterView.AdapterContextMenuInfo contextMenuInfo = (AdapterView.AdapterContextMenuInfo)menuInfo;
+		Notification n = (Notification)adapter.getItem(contextMenuInfo.position);
+		if(n.getAppName() != null){
+			menu.setHeaderTitle("Select the Action");  
+	        menu.add(0, v.getId(), 0, "Ignore this App");
+	        menu.add(0, v.getId(), 0, "Uninstall this App");
+		}
+        //menu.add(0, v.getId(), 0, "Delete the Contact"); 
 	}
+	
+	@Override  
+    public boolean onContextItemSelected(MenuItem item)
+    {  
+
+
+		AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();		 
+		
+        //  info.position will give the index of selected item
+		int intIndexSelected = info.position; 
+		
+		
+        if(item.getTitle()=="Ignore this App")
+        {
+        	Notification n = (Notification)adapter.getItem(intIndexSelected);
+        	if(layout == null){
+        		layout = (ListView) findViewById(R.id.notificationsListViewId);
+        	}
+        	HashSet<String> ignoreAppSet = new HashSet<String>();
+        	ignoreAppSet.add(n.getAppName());
+        	controller.insertIgnoredApps(ignoreAppSet, ctx); 
+        	
+        	adapter.clearNotifications();
+        	populateNotificationAdapter(layout);
+        	adapter.notifyDataSetChanged();
+        	layout.setAdapter(adapter);
+                   
+        }else if(item.getTitle()=="Uninstall this App"){
+        	Notification n = (Notification)adapter.getItem(intIndexSelected);
+        	Intent intent = new Intent(Intent.ACTION_DELETE, Uri.fromParts("package",
+			n.getPackageName(),null));
+			startActivity(intent);  
+        }
+                 
+        return true;  
+                
+                           
+      } 
+		
 
 	private DatabaseChangedReceiver mReceiver = new DatabaseChangedReceiver() {
 	   public void onReceive(Context context, Intent intent) {
@@ -93,6 +148,9 @@ public class Notification_Activity extends Activity{
 		
 		IntentFilter intentFilter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
         registerReceiver(mReceiver, intentFilter);
+        adapter.clearNotifications();
+        populateNotificationAdapter(layout);
+        adapter.notifyDataSetChanged();
 		
 	}
 	
@@ -135,17 +193,27 @@ public class Notification_Activity extends Activity{
         {
         case R.id.menu_clear:	            
         	showClearWarning();
-
+        	break;
  
         case R.id.meni_Exit:
         		        
-        	
+        	break;
         case R.id.group_notifications:
         	updateGroupNotificationPreference();
         	
+        	break;
+        case R.id.view_ignored_Apps:
+        	        	
+	    	Intent intent=new Intent(getApplicationContext(), Ignored_Apps_Activity.class);	    		    	
+	    	startActivity(intent);	    	
+        	break;
+        	
         default:
             return super.onOptionsItemSelected(item);
+            
         }
+        
+        return true;
     } 
 	
 	private void showClearWarning(){
@@ -170,7 +238,7 @@ public class Notification_Activity extends Activity{
 		            	}
 		            	controller.deleteAllNotifications();
 		            	adapter.clearNotifications();
-		            	populateDefaultMessage(layout);
+		            	populateDefaultMessage(layout,false);
 		            	adapter.notifyDataSetChanged();
 			        	layout.setAdapter(adapter);
 			        	
@@ -189,7 +257,11 @@ public class Notification_Activity extends Activity{
 		alertDialog2.show();
 	}
 	
-	private void ignoreAppWarning(final View view){
+	public void deleteAppNotifications(final View view){
+		
+		String appName = view.getTag().toString().split("##")[0];
+		final String packageName = view.getTag().toString().split("##")[1];
+			
 		AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
 		        Notification_Activity.this);
 
@@ -197,22 +269,19 @@ public class Notification_Activity extends Activity{
 		alertDialog2.setTitle("Warning");
 
 		// Setting Dialog Message
-		alertDialog2.setMessage(view.getTag().toString() + " App will be moved to Ignore List.");
+		alertDialog2.setMessage("Are you sure you want to delete all Notifications for " + appName + " ?");
 
 		// Setting Icon to Dialog
 		//alertDialog2.setIcon(R.drawable.delete);
 
 		// Setting Positive "Yes" Btn
-		alertDialog2.setPositiveButton("Ok",
+		alertDialog2.setPositiveButton("YES",
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
 		            	if(layout == null){
 		            		layout = (ListView) findViewById(R.id.notificationsListViewId);
 		            	}
-		            	HashSet<String> ignoreAppSet = new HashSet<String>();
-		            	ignoreAppSet.add(view.getTag().toString());
-		            	controller.insertIgnoredApps(ignoreAppSet, ctx); 
-		            	
+		            	controller.deleteAppNotifications(packageName);
 		            	adapter.clearNotifications();
 		            	populateNotificationAdapter(layout);
 		            	adapter.notifyDataSetChanged();
@@ -221,7 +290,7 @@ public class Notification_Activity extends Activity{
 		            }
 		        });
 		// Setting Negative "NO" Btn
-		alertDialog2.setNegativeButton("Cancel",
+		alertDialog2.setNegativeButton("NO",
 		        new DialogInterface.OnClickListener() {
 		            public void onClick(DialogInterface dialog, int which) {
 		               
@@ -231,6 +300,7 @@ public class Notification_Activity extends Activity{
 
 		// Showing Alert Dialog
 		alertDialog2.show();
+		
 	}
 	
 	private void showServiceAlert(){
@@ -303,6 +373,7 @@ public class Notification_Activity extends Activity{
 		HashMap<String,String> appPackageMap = new HashMap<String,String>();
 		HashMap<String,String> appLastTimeMap = new HashMap<String,String>();
 		HashSet<String> ignoredApps = controller.getAllIgnoredApps();
+		Boolean hasNotification = false;
 		
 		if(data != null && data.size() > 0){
 			Boolean isSectionHeader = true;
@@ -351,13 +422,16 @@ public class Notification_Activity extends Activity{
 										icon = this.getPackageManager().getApplicationIcon(appPackageMap.get(app));
 									}
 									nn.setAppIcon(icon);
+									nn.setPackageName(appPackageMap.get(app));
 								}
 								catch (PackageManager.NameNotFoundException ne)
 								 {
 
 								 }
-								if(!ignoredApps.contains(app))
+								if(!ignoredApps.contains(app)){
 									adapter.addNotification(nn);
+									hasNotification = true;
+								}
 							}
 						}
 					}
@@ -380,13 +454,16 @@ public class Notification_Activity extends Activity{
 									icon = this.getPackageManager().getApplicationIcon(appPackageMap.get(app));
 								}
 								nn.setAppIcon(icon);
+								nn.setPackageName(appPackageMap.get(app));
 							}
 							catch (PackageManager.NameNotFoundException ne)
 							 {
 
 							 }
-							if(!ignoredApps.contains(app))
+							if(!ignoredApps.contains(app)){
 								adapter.addNotification(nn);
+								hasNotification = true;
+							}
 						}
 					}
 					appMap.clear();
@@ -395,8 +472,12 @@ public class Notification_Activity extends Activity{
 				}
 				
 			}
+			if(hasNotification == false){
+				adapter.clearNotifications();
+				populateDefaultMessage(layout,true);
+			}
 		}else{
-			populateDefaultMessage(layout);
+			populateDefaultMessage(layout,true);
 		}
 	}
 	
@@ -408,6 +489,7 @@ public class Notification_Activity extends Activity{
 		HashMap<String,String> appPackageMap = new HashMap<String,String>();
 		HashMap<String,String> appLastTimeMap = new HashMap<String,String>();
 		HashSet<String> ignoredApps = controller.getAllIgnoredApps();
+		Boolean hasNotifications = false;
 		
 		if(data != null && data.size() > 0){
 			
@@ -433,6 +515,7 @@ public class Notification_Activity extends Activity{
 					nn.setAppName(app);
 					nn.setNotificationCount(appMap.get(app));					
 					nn.setLastActivityDate(appLastTimeMap.get(app));
+					nn.setPackageName(appPackageMap.get(app));
 					try{
 						
 						Drawable icon;
@@ -447,12 +530,18 @@ public class Notification_Activity extends Activity{
 					 {
 
 					 }
-					if(!ignoredApps.contains(app))
+					if(!ignoredApps.contains(app)){
 						adapter.addNotification(nn);
+						hasNotifications = true;
+					}
 				}
 			}
+			if(hasNotifications == false){
+				adapter.clearNotifications();
+				populateDefaultMessage(layout,false);
+			}
 		}else{
-			populateDefaultMessage(layout);
+			populateDefaultMessage(layout,false);
 		}
 		
 		
@@ -461,34 +550,78 @@ public class Notification_Activity extends Activity{
 	
 	
 	
-	private void populateDefaultMessage(ListView layout){
+	private void populateDefaultMessage(ListView layout, Boolean isGroupedByDay){
 		Notification n1 = new Notification();
 		Notification n2 = new Notification();
 		n1.setIsSectionHeader(true);
 		n1.setSectionHeaderValue("Today");
 		n2.setAppName("No Notifications till now. ");
 		n2.setNotificationCount(-1);
-		adapter.addNotification(n1);
+		if(isGroupedByDay){
+			adapter.addNotification(n1);
+		}
 		adapter.addNotification(n2);
 		layout.setAdapter(adapter);
 	}
 	
 	
 	
-	public static boolean isAccessibilityEnabled(Context context, String id) {
+	public boolean isAccessibilityEnabled(Context context, String id) {
 
-	    AccessibilityManager am = (AccessibilityManager) context
+	    /*AccessibilityManager am = (AccessibilityManager) context
 	            .getSystemService(Context.ACCESSIBILITY_SERVICE);
 
 	    List<AccessibilityServiceInfo> runningServices = am
 	            .getEnabledAccessibilityServiceList(AccessibilityEvent.TYPES_ALL_MASK);
 	    for (AccessibilityServiceInfo service : runningServices) {
+	    	Log.d("isAccessibilityEnabled", "Accessibility Service=========== : " + service.getSettingsActivityName());
 	        if (id.equals(service.getId())) {
 	            return true;
 	        }
 	    }
 
+	    return false;*/
+		
+		int accessibilityEnabled = 0;
+	    final String LIGHTFLOW_ACCESSIBILITY_SERVICE = "com.example.test/com.example.text.ccessibilityService";
+	    boolean accessibilityFound = false;
+	    try {
+	        accessibilityEnabled = Settings.Secure.getInt(this.getContentResolver(),android.provider.Settings.Secure.ACCESSIBILITY_ENABLED);
+	        Log.d("test", "ACCESSIBILITY: " + accessibilityEnabled);
+	    } catch (SettingNotFoundException e) {
+	        Log.d("test", "Error finding setting, default accessibility to not found: " + e.getMessage());
+	    }
+
+	    TextUtils.SimpleStringSplitter mStringColonSplitter = new TextUtils.SimpleStringSplitter(':');
+
+	    if (accessibilityEnabled==1){
+	        Log.d("test", "***ACCESSIBILIY IS ENABLED***: ");
+
+
+	         String settingValue = Settings.Secure.getString(getContentResolver(), Settings.Secure.ENABLED_ACCESSIBILITY_SERVICES);
+	         Log.d("test", "Setting: " + settingValue);
+	         if (settingValue != null) {
+	             TextUtils.SimpleStringSplitter splitter = mStringColonSplitter;
+	             splitter.setString(settingValue);
+	             while (splitter.hasNext()) {
+	                 String accessabilityService = splitter.next();
+	                 Log.d("test", "Setting: " + accessabilityService);
+	                 if (accessabilityService.equalsIgnoreCase(accServiceId)){
+	                     Log.d("test", "We've found the correct setting - accessibility is switched on!");
+	                     return true;
+	                 }
+	             }
+	         }
+
+	        Log.d("test", "***END***");
+	    }
+	    else{
+	    	
+	        Log.d("test", "***ACCESSIBILIY IS DISABLED***");
+	        return false;
+	    }
 	    return false;
+		    
 	}
 	
 	private void updateGroupNotificationPreference(){

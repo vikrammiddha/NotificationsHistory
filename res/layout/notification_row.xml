@@ -2,7 +2,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="horizontal" >
+    android:orientation="horizontal"
+    android:id="@+id/llId" >
 
     <ImageView
         android:id="@+id/appImageViewId"
@@ -15,13 +16,13 @@
          />
 
     <LinearLayout android:layout_width="fill_parent"
-    				android:layout_height="wrap_content"
+    				android:layout_height="fill_parent"
     				android:orientation="vertical"
     				android:layout_weight="50">
 	    <TextView
 	        android:id="@+id/notificationRowTextViewId"
 	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
+	        android:layout_height="wrap_content"
 	        android:background="#FFFFFF"
 	        android:text="Row"
 	        android:gravity="left"
@@ -33,7 +34,7 @@
 	    <TextView
 	        android:id="@+id/lastActivityDateId"
 	        android:layout_width="fill_parent"
-	        android:layout_height="fill_parent"
+	        android:layout_height="wrap_content"
 	        android:background="#FFFFFF"
 	        android:text="Last: 01/03/2013 00:00:00"
 	        android:gravity="left"
@@ -63,7 +64,7 @@
         android:layout_weight="85"
         android:layout_gravity="center"
         android:src="@drawable/trash"
-        android:onClick="ignoreApp"
+        android:onClick="deleteAppNotifications"
         android:clickable="true"
          />
      

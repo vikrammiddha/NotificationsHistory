@@ -72,9 +72,14 @@ public class DBController  extends SQLiteOpenHelper {
 	  	SQLiteDatabase database = this.getWritableDatabase();	
 		
 		for(String app : appSet){			
-			database.delete("ignore_list",  "appName = " + app, null);			
+			database.delete("ignore_list",  "appName = ?" , new String[] { app });			
 		}
 		  
+  }
+  
+  public void deleteAppNotifications(String app){
+	  SQLiteDatabase database = this.getWritableDatabase();	
+	  database.delete("not_hist",  "packageName = ?" , new String[] { app });	
   }
   
   public HashSet<String> getAllIgnoredApps(){
@@ -89,6 +94,22 @@ public class DBController  extends SQLiteOpenHelper {
 	      } while (cursor.moveToNext());
 	    }
 	    return ignoredApps;
+  }
+  
+  public HashMap<String,String> getAppPackageMap(){
+	  
+		HashMap<String,String> retMap = new HashMap<String,String>();
+	  
+		String selectQuery = "SELECT  distinct appName, packageName FROM not_hist ";
+		SQLiteDatabase database = this.getWritableDatabase();
+		Cursor cursor = database.rawQuery(selectQuery, null);
+	    if (cursor.moveToFirst()) {
+	    	do {
+	    		retMap.put(cursor.getString(0), cursor.getString(1));	    		
+	      } while (cursor.moveToNext());
+	    }
+	    return retMap;
+	  
   }
   
   public void insertNotification(HashMap<String, String> queryValues, Context context) {

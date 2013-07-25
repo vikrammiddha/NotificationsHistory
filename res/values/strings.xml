@@ -6,5 +6,7 @@
     <string name="hello_world">Hello world!</string>
     <string name="clear_warning">Are you sure you want to delete all the notification history data ?</string>
     <string name="service_warning">NotificationsHistory service is not running currently. This service should be running in order for this app to give correct results.</string>
+    <drawable name="focused">#ff5500</drawable>
+    <drawable name="selected">#FF00FF</drawable>
 
 </resources>

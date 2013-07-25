@@ -4,6 +4,22 @@ import android.graphics.drawable.Drawable;
 
 public class Notification {
 	
+	Boolean isRowChecked;
+	
+	public Boolean getIsRowChecked() {
+		return isRowChecked;
+	}
+	public void setIsRowChecked(Boolean isRowChecked) {
+		this.isRowChecked = isRowChecked;
+	}
+	String sender;
+	
+	public String getSender() {
+		return sender;
+	}
+	public void setSender(String sender) {
+		this.sender = sender;
+	}
 	String lastActivityDate;
 	
 	public String getLastActivityDate() {

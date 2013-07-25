@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#FFFFFF" >
+
+    <ListView
+		android:id="@+id/ignoredAppsListViewId"
+		android:layout_width="fill_parent"
+		android:layout_height="fill_parent" 
+		android:divider="#0C0A42"
+		android:dividerHeight="3px"
+		android:layout_weight="10"
+		/>
+    
+    <Button
+        android:id="@+id/removeIgnoredAppsButtonId"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_weight="90"
+        android:text="Removed Ignored Apps"
+        android:onClick="removeIgnoredApps" />
+
+</LinearLayout>

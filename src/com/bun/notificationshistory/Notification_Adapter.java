@@ -113,7 +113,11 @@ public class Notification_Adapter extends BaseAdapter{
 			
 			ImageView trashImageView = (ImageView)v;
 			
-			trashImageView.setTag(n.getAppName());
+			trashImageView.setTag(n.getAppName() + "##" + n.getPackageName());
+			
+			if(n.getAppName().startsWith("No Notifications")){
+				trashImageView.setImageDrawable(null);
+			}
 			
 			//timeTextView.setTextColor(Color.rgb(255,255,255));
 		}
