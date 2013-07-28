@@ -50,7 +50,7 @@ public class Notification_Details extends Activity{
 		populateNotificationDetails(layout);
 		IntentFilter intentFilter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
         registerReceiver(mReceiver, intentFilter);        
-        layout.setSelector(R.drawable.listselector);
+        
 	}
 	
 	private DatabaseChangedReceiver mReceiver = new DatabaseChangedReceiver() {

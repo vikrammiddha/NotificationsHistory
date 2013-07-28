@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="#FFFFFF">
+
+    <LinearLayout
+    android:id="@+id/firstGraphLayoutId"    
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:layout_weight="10">
+    	
+    	<com.androidplot.xy.XYPlot
+            android:id="@+id/mySimpleXYPlot"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            androidPlot.title="Top 10 Apps Line Chart"
+            androidPlot.domainLabel="DAY"
+            androidPlot.rangeLabel="Notifications Count"
+            androidPlot.titleWidget.labelPaint.textSize="@dimen/title_font_size"
+            androidPlot.domainLabelWidget.labelPaint.textSize="@dimen/domain_label_font_size"
+            androidPlot.rangeLabelWidget.labelPaint.textSize="@dimen/range_label_font_size"
+            androidPlot.graphWidget.marginTop="20dp"
+            androidPlot.graphWidget.marginLeft="15dp"
+            androidPlot.graphWidget.marginBottom="150dp"
+            androidPlot.graphWidget.marginRight="20dp"
+            androidPlot.graphWidget.rangeLabelPaint.textSize="@dimen/range_tick_label_font_size"
+            androidPlot.graphWidget.rangeOriginLabelPaint.textSize="@dimen/range_tick_label_font_size"
+            androidPlot.graphWidget.domainLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+            androidPlot.graphWidget.domainOriginLabelPaint.textSize="@dimen/domain_tick_label_font_size"
+            androidPlot.legendWidget.textPaint.textSize="@dimen/legend_text_font_size"
+            androidPlot.legendWidget.iconSizeMetrics.heightMetric.value="15dp"
+            androidPlot.legendWidget.iconSizeMetrics.widthMetric.value="15dp"
+            androidPlot.legendWidget.heightMetric.value="20dp"
+            androidPlot.legendWidget.positionMetrics.anchor="right_bottom"
+            androidPlot.graphWidget.gridLinePaint.color="#000000"/>
+    
+    </LinearLayout>
+    
+    <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" 
+    android:layout_weight="90"
+    android:paddingTop="30dp">
+	    <LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" 
+	    	    
+	    android:layout_weight="66">
+	      <ImageView
+	        android:id="@+id/dotimage1Id"
+	        android:layout_width="15dp"
+	        android:layout_height="15dp"
+	        android:layout_gravity="right|center"
+	        android:background="@drawable/bluecircle"    
+	        
+	         />  
+	    </LinearLayout> 
+	    
+        <LinearLayout
+	    android:layout_width="fill_parent"	
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" 
+	    android:baselineAligned="true"
+	    
+	    android:layout_weight="66">
+	     <ImageView
+	        android:id="@+id/dotimage1Id"
+	        android:layout_width="15dp"
+	        android:layout_height="15dp"
+	    	android:layout_gravity="center|center"    
+	        android:background="@drawable/graycircle" 	        
+	         />  
+	    </LinearLayout> 
+               <LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" 
+	    	    
+	    android:layout_weight="66">
+	      <ImageView
+	        android:id="@+id/dotimage1Id"
+	        android:layout_width="15dp"
+	        android:layout_height="15dp"
+	        android:layout_gravity="left|center"
+	        android:background="@drawable/graycircle"    
+	        
+	         />  
+	    </LinearLayout>  
+     </LinearLayout>
+
+</LinearLayout>

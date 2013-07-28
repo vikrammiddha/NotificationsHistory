@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical" 
+    android:background="#FFFFFF">
+    
+    <TextView
+        android:id="@+id/number"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:text="Second Graph"
+        android:layout_weight="10"
+        android:background="#FFFFFF"
+        android:textColor="#000000"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+    
+      <LinearLayout
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="horizontal" 
+    android:layout_weight="90"
+    android:paddingTop="30dp">
+	    <LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" 
+	    	    
+	    android:layout_weight="66">
+	      <ImageView
+	        android:id="@+id/dotimage1Id"
+	        android:layout_width="15dp"
+	        android:layout_height="15dp"
+	        android:layout_gravity="right|center"
+	        android:background="@drawable/graycircle"    
+	        
+	         />  
+	    </LinearLayout> 
+	    
+        <LinearLayout
+	    android:layout_width="fill_parent"	
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" 
+	    android:baselineAligned="true"
+	    
+	    android:layout_weight="66">
+	     <ImageView
+	        android:id="@+id/dotimage1Id"
+	        android:layout_width="15dp"
+	        android:layout_height="15dp"
+	    	android:layout_gravity="center|center"    
+	        android:background="@drawable/bluecircle" 	        
+	         />  
+	    </LinearLayout> 
+               <LinearLayout
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent"
+	    android:orientation="vertical" 
+	    	    
+	    android:layout_weight="66">
+	      <ImageView
+	        android:id="@+id/dotimage1Id"
+	        android:layout_width="15dp"
+	        android:layout_height="15dp"
+	        android:layout_gravity="left|center"
+	        android:background="@drawable/graycircle"    
+	        
+	         />  
+	    </LinearLayout>  
+     </LinearLayout>
+
+</LinearLayout>

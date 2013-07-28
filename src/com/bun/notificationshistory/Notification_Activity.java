@@ -142,7 +142,7 @@ public class Notification_Activity extends Activity{
 	    
 	    
 
-	    return true;
+	    return retour;
 	}
 	
 	@Override
@@ -273,12 +273,18 @@ public class Notification_Activity extends Activity{
         	break;
  
         case R.id.meni_Exit:
+        	finish();
         		        
         	break;
         case R.id.group_notifications:
         	updateGroupNotificationPreference();
         	
         	break;
+        case R.id.view_graphs:
+        	Intent intentG=new Intent(getApplicationContext(), First_Graph_Activity.class);	    		    	
+	    	startActivity(intentG);	    	
+        	break;
+        	
         case R.id.view_ignored_Apps:
         	        	
 	    	Intent intent=new Intent(getApplicationContext(), Ignored_Apps_Activity.class);	    		    	

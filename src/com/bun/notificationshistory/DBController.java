@@ -156,6 +156,68 @@ public class DBController  extends SQLiteOpenHelper {
     database.execSQL(deleteQuery);
   }*/
  
+  
+  public ArrayList<HashMap<String,String>> getLineGraphData(){
+	  	ArrayList<HashMap<String, String>> wordList;
+	    wordList = new ArrayList<HashMap<String, String>>();
+	    String selectQuery = "SELECT notTime,appName,count(*) from not_hist group by notTime, appName order by appName,notTime";
+	    SQLiteDatabase database = this.getWritableDatabase();
+	    Cursor cursor = database.rawQuery(selectQuery, null);
+	    Set<String> ignoredApps = getAllIgnoredApps();
+	    if (cursor.moveToFirst()) {
+	      do {
+	    	
+	        HashMap<String, String> map = new HashMap<String, String>();
+	        map.put("notTime", cursor.getString(0));
+	        if(cursor.getString(1) != null && cursor.getString(1).toUpperCase().equals("GOOGLE SERVICES FRAMEWORK")){
+	        	map.put("appName", "Google Talk");
+	        }else{
+	        	map.put("appName", cursor.getString(1));
+	        }
+	        if(ignoredApps.contains(map.get("appNAme"))){
+	        	continue;
+	        }
+	        map.put("count", cursor.getString(2));	        
+	        wordList.add(map);
+	      } while (cursor.moveToNext());
+	    }
+	    return wordList;
+  }
+  
+  public ArrayList<String> getLineGraphDays(){
+	  ArrayList<String> wordList;
+	    wordList = new ArrayList<String>();
+	    String selectQuery = "SELECT distinct notTime from not_hist order by notTime";
+	    SQLiteDatabase database = this.getWritableDatabase();
+	    Cursor cursor = database.rawQuery(selectQuery, null);
+	    
+	    if (cursor.moveToFirst()) {
+	      do {
+	    	
+	    	  wordList.add(cursor.getString(0));
+	        
+	      } while (cursor.moveToNext());
+	    }
+	    return wordList;		
+  }
+  
+  public ArrayList<String> getTopTenApps(){
+	  ArrayList<String> wordList;
+	    wordList = new ArrayList<String>();
+	    String selectQuery = "SELECT appName,count(*) from not_hist group by appName order by count(*) desc limit 10";
+	    SQLiteDatabase database = this.getWritableDatabase();
+	    Cursor cursor = database.rawQuery(selectQuery, null);
+	    
+	    if (cursor.moveToFirst()) {
+	      do {
+	    	
+	    	  wordList.add(cursor.getString(0));
+	        
+	      } while (cursor.moveToNext());
+	    }
+	    return wordList;		
+  }
+  
   public ArrayList<HashMap<String, String>> getAllNotifications() {
     ArrayList<HashMap<String, String>> wordList;
     wordList = new ArrayList<HashMap<String, String>>();
