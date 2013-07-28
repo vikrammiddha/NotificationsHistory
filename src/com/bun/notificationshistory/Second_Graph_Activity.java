@@ -1,20 +1,39 @@
 package com.bun.notificationshistory;
 
 
+import java.util.HashMap;
+
+import org.achartengine.ChartFactory;
+import org.achartengine.GraphicalView;
+import org.achartengine.model.CategorySeries;
+import org.achartengine.renderer.DefaultRenderer;
+import org.achartengine.renderer.SimpleSeriesRenderer;
+
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.GestureDetector.SimpleOnGestureListener;
+import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.Toast;
 
 public class Second_Graph_Activity extends Activity{
 	
-
+	int[] pieChartValues={25,15,20,40};
+    
+    public static final String TYPE = "type";
+    private static int[] COLORS = new int[] { Color.BLACK,Color.BLUE,Color.CYAN,Color.GREEN,Color.LTGRAY,Color.MAGENTA,Color.RED,Color.YELLOW, 
+		Color.parseColor("#FF6C0A"), Color.parseColor("#DBB407"), Color.parseColor("#9E9197") };
+    private CategorySeries mSeries = new CategorySeries("");
+    private DefaultRenderer mRenderer = new DefaultRenderer();
+    private GraphicalView mChartView;
 	
-private GestureDetector gestureDetector;
+	private GestureDetector gestureDetector;
+	DBController controller;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -22,11 +41,52 @@ private GestureDetector gestureDetector;
 		super.onCreate(savedInstanceState);				
 		setContentView(R.layout.second_graph);
 		
+		controller = new DBController(this);
+		
 		gestureDetector = new GestureDetector(
                 new SwipeGestureDetector());
 		
+		mRenderer.setApplyBackgroundColor(true);
+        mRenderer.setBackgroundColor(Color.GRAY);
+        mRenderer.setChartTitle("App Notifications Pie Chart");
+        mRenderer.setChartTitleTextSize(50);        
+        mRenderer.setLabelsTextSize(15);
+        mRenderer.setLegendTextSize(25);
+        mRenderer.setLabelsTextSize(30);
+        
+        mRenderer.setZoomButtonsVisible(false);
+        mRenderer.setShowLabels(false);
+        mRenderer.setStartAngle(90);
+         
+        if (mChartView == null) {
+              LinearLayout layout = (LinearLayout) findViewById(R.id.chart);
+              mChartView = ChartFactory.getPieChartView(this, mSeries, mRenderer);
+              mRenderer.setClickEnabled(true);
+              mRenderer.setSelectableBuffer(10);
+              layout.addView(mChartView, new LayoutParams(LayoutParams.FILL_PARENT,
+                  LayoutParams.FILL_PARENT));
+            } else {
+              mChartView.repaint();
+            }
+        fillPieChart();
+
 		
 	}
+	
+	public void fillPieChart(){
+		HashMap<String,Integer> pieChartValues = controller.getPieGraphData();
+        
+		for(String app : pieChartValues.keySet())
+        {
+             mSeries.add(app, pieChartValues.get(app));
+                SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
+                renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
+                mRenderer.addSeriesRenderer(renderer);
+                if (mChartView != null)
+                   mChartView.repaint();    
+        }
+    }
+
 	
 	@Override
 	  public boolean onTouchEvent(MotionEvent event) {

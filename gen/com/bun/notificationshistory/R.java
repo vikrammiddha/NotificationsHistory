@@ -48,6 +48,7 @@ public final class R {
         public static final int action_settings=0x7f0a0016;
         public static final int appImageDetailedViewId=0x7f0a0009;
         public static final int appImageViewId=0x7f0a000f;
+        public static final int chart=0x7f0a0014;
         public static final int dotimage1Id=0x7f0a0002;
         public static final int firstGraphLayoutId=0x7f0a0000;
         public static final int group_notifications=0x7f0a0017;
@@ -66,7 +67,6 @@ public final class R {
         public static final int notificationsDetailsListViewId=0x7f0a000c;
         public static final int notificationsListViewId=0x7f0a000d;
         public static final int notoficationRowDetailId=0x7f0a0008;
-        public static final int number=0x7f0a0014;
         public static final int removeIgnoredAppsButtonId=0x7f0a0004;
         public static final int sectionHeaderTextViewId=0x7f0a0015;
         public static final int senderTextViewId=0x7f0a000a;

@@ -184,6 +184,32 @@ public class DBController  extends SQLiteOpenHelper {
 	    return wordList;
   }
   
+  public HashMap<String,Integer> getPieGraphData(){
+	  	
+	    String selectQuery = "SELECT appName,count(*) from not_hist group by  appName ";
+	    SQLiteDatabase database = this.getWritableDatabase();
+	    Cursor cursor = database.rawQuery(selectQuery, null);
+	    HashMap<String, Integer> map = new HashMap<String, Integer>();
+	    if (cursor.moveToFirst()) {
+	      do {
+	    	
+	        
+	        String appName = "";
+	        if(cursor.getString(0) != null && cursor.getString(0).toUpperCase().equals("GOOGLE SERVICES FRAMEWORK")){
+	        	appName = "Google Talk";
+	        	
+	        }else{
+	        	appName = cursor.getString(0);
+	        	
+	        }
+	        
+	        map.put(appName, Integer.valueOf(cursor.getString(1)));        
+	        
+	      } while (cursor.moveToNext());
+	    }
+	    return map;
+}
+  
   public ArrayList<String> getLineGraphDays(){
 	  ArrayList<String> wordList;
 	    wordList = new ArrayList<String>();
