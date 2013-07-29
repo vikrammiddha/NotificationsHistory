@@ -10,15 +10,17 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:background="#4D4D4D"
-	        android:text="App Notifications Pie Chart"
+	        android:text="App Notifications Bar Chart"
 	        android:gravity="center"
 	        android:textAppearance="?android:attr/textAppearanceMedium"
 	        android:textColor="#FFFFFF"
 	        android:textStyle="bold"
 	        android:layout_weight="90"/>
    
-   <LinearLayout android:id="@+id/chart" android:orientation="horizontal"
-        android:layout_width="fill_parent" android:layout_height="wrap_content" android:layout_weight="20" />
+   <LinearLayout android:id="@+id/barchart" android:orientation="horizontal"
+        android:layout_width="fill_parent" android:layout_height="fill_parent" 
+        android:background="#847575"
+        android:layout_weight="20" />
     
       <LinearLayout
     android:layout_width="fill_parent"
@@ -54,7 +56,7 @@
 	        android:layout_width="15dp"
 	        android:layout_height="15dp"
 	    	android:layout_gravity="center|center"    
-	        android:background="@drawable/bluecircle" 	        
+	        android:background="@drawable/graycircle" 	        
 	         />  
 	    </LinearLayout> 
                <LinearLayout
@@ -68,7 +70,7 @@
 	        android:layout_width="15dp"
 	        android:layout_height="15dp"
 	        android:layout_gravity="left|center"
-	        android:background="@drawable/graycircle"    
+	        android:background="@drawable/bluecircle"    
 	        
 	         />  
 	    </LinearLayout>  

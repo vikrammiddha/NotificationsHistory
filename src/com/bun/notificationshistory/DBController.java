@@ -34,9 +34,9 @@ public class DBController  extends SQLiteOpenHelper {
     
     String ignoreTableQuery = "CREATE TABLE ignore_list (appName Text)";
     
-    //database.execSQL(query);
+    database.execSQL(query);
     database.execSQL(prefTableQuer);
-    //database.execSQL(ignoreTableQuery);
+    database.execSQL(ignoreTableQuery);
     
     populateDefaultPreferences(database);
     
@@ -49,9 +49,9 @@ public class DBController  extends SQLiteOpenHelper {
     String prefQuery = "DROP TABLE IF EXISTS preferences";
     String ignoreTableQuery = "DROP TABLE IF EXISTS ignore_list";
     
-    //database.execSQL(query);
+    database.execSQL(query);
     database.execSQL(prefQuery);
-    //database.execSQL(ignoreTableQuery);
+    database.execSQL(ignoreTableQuery);
     onCreate(database);
   }
  

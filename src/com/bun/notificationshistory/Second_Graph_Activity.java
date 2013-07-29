@@ -23,8 +23,7 @@ import android.widget.Toast;
 
 public class Second_Graph_Activity extends Activity{
 	
-	int[] pieChartValues={25,15,20,40};
-    
+	    
     public static final String TYPE = "type";
     private static int[] COLORS = new int[] { Color.BLACK,Color.BLUE,Color.CYAN,Color.GREEN,Color.LTGRAY,Color.MAGENTA,Color.RED,Color.YELLOW, 
 		Color.parseColor("#FF6C0A"), Color.parseColor("#DBB407"), Color.parseColor("#9E9197") };
@@ -97,11 +96,13 @@ public class Second_Graph_Activity extends Activity{
 	  }
 
 	  private void onLeftSwipe() {
-		  
+		  Intent intentG=new Intent(getApplicationContext(), Bar_Chart_Activity.class);	    		    	
+		  startActivity(intentG);	
+		  finish();
 	  }
 
 	  private void onRightSwipe() {
-		  Toast.makeText(Second_Graph_Activity.this, "Left Swipe", Toast.LENGTH_SHORT).show();
+		  
 		  Intent intentG=new Intent(getApplicationContext(), First_Graph_Activity.class);	    		    	
 		  startActivity(intentG);	
 		  finish();

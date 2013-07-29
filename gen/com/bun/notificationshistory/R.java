@@ -45,21 +45,22 @@ public final class R {
         public static final int trash=0x7f020008;
     }
     public static final class id {
-        public static final int action_settings=0x7f0a0016;
+        public static final int action_settings=0x7f0a0017;
         public static final int appImageDetailedViewId=0x7f0a0009;
         public static final int appImageViewId=0x7f0a000f;
+        public static final int barchart=0x7f0a0016;
         public static final int chart=0x7f0a0014;
         public static final int dotimage1Id=0x7f0a0002;
         public static final int firstGraphLayoutId=0x7f0a0000;
-        public static final int group_notifications=0x7f0a0017;
+        public static final int group_notifications=0x7f0a0018;
         public static final int ignoredAppCheckBoxId=0x7f0a0007;
         public static final int ignoredAppIconImageViewId=0x7f0a0005;
         public static final int ignoredAppNameTextViewId=0x7f0a0006;
         public static final int ignoredAppsListViewId=0x7f0a0003;
         public static final int lastActivityDateId=0x7f0a0011;
         public static final int llId=0x7f0a000e;
-        public static final int meni_Exit=0x7f0a001b;
-        public static final int menu_clear=0x7f0a001a;
+        public static final int meni_Exit=0x7f0a001c;
+        public static final int menu_clear=0x7f0a001b;
         public static final int messageTextViewId=0x7f0a000b;
         public static final int mySimpleXYPlot=0x7f0a0001;
         public static final int notificationCountId=0x7f0a0012;
@@ -71,8 +72,8 @@ public final class R {
         public static final int sectionHeaderTextViewId=0x7f0a0015;
         public static final int senderTextViewId=0x7f0a000a;
         public static final int trashImageViewId=0x7f0a0013;
-        public static final int view_graphs=0x7f0a0019;
-        public static final int view_ignored_Apps=0x7f0a0018;
+        public static final int view_graphs=0x7f0a001a;
+        public static final int view_ignored_Apps=0x7f0a0019;
     }
     public static final class layout {
         public static final int activity_notification__service=0x7f030000;
@@ -85,6 +86,7 @@ public final class R {
         public static final int notification_row=0x7f030007;
         public static final int second_graph=0x7f030008;
         public static final int section_header=0x7f030009;
+        public static final int third_graph=0x7f03000a;
     }
     public static final class menu {
         public static final int notification_=0x7f090000;
