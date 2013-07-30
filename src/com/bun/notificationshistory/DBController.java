@@ -162,12 +162,19 @@ public class DBController  extends SQLiteOpenHelper {
 	    wordList = new ArrayList<HashMap<String, String>>();
 	    String selectQuery = "SELECT notTime,appName,count(*) from not_hist group by notTime, appName order by appName,notTime";
 	    SQLiteDatabase database = this.getWritableDatabase();
+	    ArrayList<String> days = getLineGraphDays();
 	    Cursor cursor = database.rawQuery(selectQuery, null);
 	    Set<String> ignoredApps = getAllIgnoredApps();
 	    if (cursor.moveToFirst()) {
 	      do {
 	    	
+    	  if(!days.contains(cursor.getString(0)))
+    		  continue;	
+	    	  
 	        HashMap<String, String> map = new HashMap<String, String>();
+	        if(cursor.getString(1) != null && (cursor.getString(1).toUpperCase().equals("SYSTEM UI"))
+								|| cursor.getString(1).toUpperCase().equals("ANDROID SYSTEM"))
+			continue;
 	        map.put("notTime", cursor.getString(0));
 	        if(cursor.getString(1) != null && cursor.getString(1).toUpperCase().equals("GOOGLE SERVICES FRAMEWORK")){
 	        	map.put("appName", "Google Talk");
@@ -189,11 +196,14 @@ public class DBController  extends SQLiteOpenHelper {
 	    String selectQuery = "SELECT appName,count(*) from not_hist group by  appName ";
 	    SQLiteDatabase database = this.getWritableDatabase();
 	    Cursor cursor = database.rawQuery(selectQuery, null);
+	    
 	    HashMap<String, Integer> map = new HashMap<String, Integer>();
 	    if (cursor.moveToFirst()) {
 	      do {
-	    	
-	        
+	    	  
+	    	  if(cursor.getString(0) != null && (cursor.getString(0).toUpperCase().equals("SYSTEM UI"))
+									|| cursor.getString(0).toUpperCase().equals("ANDROID SYSTEM"))
+			continue;
 	        String appName = "";
 	        if(cursor.getString(0) != null && cursor.getString(0).toUpperCase().equals("GOOGLE SERVICES FRAMEWORK")){
 	        	appName = "Google Talk";
@@ -213,13 +223,17 @@ public class DBController  extends SQLiteOpenHelper {
   public ArrayList<String> getLineGraphDays(){
 	  ArrayList<String> wordList;
 	    wordList = new ArrayList<String>();
-	    String selectQuery = "SELECT distinct notTime from not_hist order by notTime";
+	    String selectQuery = "SELECT distinct notTime from not_hist order by notId";
 	    SQLiteDatabase database = this.getWritableDatabase();
 	    Cursor cursor = database.rawQuery(selectQuery, null);
 	    
+	    Integer count = cursor.getCount() - 7;
+	    
 	    if (cursor.moveToFirst()) {
 	      do {
-	    	
+	    	  if(cursor.getPosition() < count){
+	    		  continue;
+	    	  }
 	    	  wordList.add(cursor.getString(0));
 	        
 	      } while (cursor.moveToNext());
@@ -243,6 +257,7 @@ public class DBController  extends SQLiteOpenHelper {
 	    }
 	    return wordList;		
   }
+  
   
   public ArrayList<HashMap<String, String>> getAllNotifications() {
     ArrayList<HashMap<String, String>> wordList;

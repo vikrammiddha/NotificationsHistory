@@ -62,6 +62,7 @@ public class Ignored_Apps_Activity extends Activity{
 		for(String app : ignoredApps){
 			Notification n = new Notification();
 			n.setAppName(app);
+			n.setIsRowChecked(false);
 			Drawable icon;
 			try{
 				if(app.equals("Google Talk")){

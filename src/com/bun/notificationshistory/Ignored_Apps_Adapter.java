@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 
 import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +18,8 @@ import android.widget.TextView;
 
 public class Ignored_Apps_Adapter extends BaseAdapter{
 	
-	private ArrayList<Notification> nList = new ArrayList<Notification>();
-	
+	private final ArrayList<Notification> nList = new ArrayList<Notification>();
+		
 	public ArrayList<Notification> getNotifications(){
 		return nList;
 	}
@@ -47,14 +48,14 @@ public class Ignored_Apps_Adapter extends BaseAdapter{
 	}
 
 	@Override
-	public View getView(int position, View view, ViewGroup parent) {
-		final Notification n = nList.get(position);
-		if(view == null){
+	public View getView(final int position, View view, ViewGroup parent) {
+		Notification n = nList.get(position);
+		//if(view == null){
 			LayoutInflater inflater =
 					LayoutInflater.from(parent.getContext());
 			view = inflater.inflate(
 					R.layout.ignored_apps_row, parent, false);
-		}
+		//}
 		View v = view.findViewById(R.id.ignoredAppIconImageViewId);
 		final ImageView imageView = (ImageView)v;
 		
@@ -69,27 +70,45 @@ public class Ignored_Apps_Adapter extends BaseAdapter{
 		
 		v = view.findViewById(R.id.ignoredAppCheckBoxId);
 		
-		final CheckBox cb = (CheckBox)v;
+		final CheckBox cb = (CheckBox)v;		
 		
+		
+		cb.setChecked(n.getIsRowChecked());
+		
+		if(n.getIsRowChecked()){
+			appTextView.setBackgroundColor(Color.parseColor("#0099FF"));
+        	cb.setBackgroundColor(Color.parseColor("#0099FF"));
+        	imageView.setBackgroundColor(Color.parseColor("#0099FF"));
+		}else{
+			appTextView.setBackgroundColor(Color.WHITE);
+        	cb.setBackgroundColor(Color.WHITE);
+        	imageView.setBackgroundColor(Color.WHITE);
+		}
+		
+				
 		cb.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 	        @Override
 	        public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-	            if(isChecked ){
-	            	n.setIsRowChecked(true);
+	        	
+	        	 int pos = (Integer) buttonView.getTag();  
+	        	 Log.d("not====================", String.valueOf(pos));
+	        	if(isChecked ){
+	            	nList.get(pos).setIsRowChecked(true);
 	            	appTextView.setBackgroundColor(Color.parseColor("#0099FF"));
 	            	cb.setBackgroundColor(Color.parseColor("#0099FF"));
 	            	imageView.setBackgroundColor(Color.parseColor("#0099FF"));
 	            }else
 	            {
-	            	n.setIsRowChecked(false);
+	            	nList.get(pos).setIsRowChecked(false);
 	            	appTextView.setBackgroundColor(Color.WHITE);
 	            	cb.setBackgroundColor(Color.WHITE);
 	            	imageView.setBackgroundColor(Color.WHITE);
 	            }
 	        }
 	    });
-						                                                                                         
+		
+		cb.setTag(position);
 		return view;
 	}
 

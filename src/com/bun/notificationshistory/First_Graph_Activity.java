@@ -5,6 +5,7 @@ import java.text.FieldPosition;
 import java.text.Format;
 import java.text.ParsePosition;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -110,9 +111,8 @@ public class First_Graph_Activity extends Activity{
 		
 		ArrayList<String> daysCovered = new ArrayList<String>();
 		
-		
 		for(HashMap<String,String> hm : graphData){
-
+			
 			count++;
 			
 			prevApp = initApp;
@@ -249,7 +249,10 @@ public class First_Graph_Activity extends Activity{
  
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-                return new StringBuffer( days.get( ( (Number)obj).intValue()   ));
+            	String s = String.valueOf(days.get( ( (Number)obj).intValue())) ;
+            	int ind = (int)Math.ceil((Double)obj);
+            	String val = days.get( ind ).split("-")[0] + "-" + days.get( ind ).split("-")[1]; 
+                return new StringBuffer( val);
             }
  
             @Override
