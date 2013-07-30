@@ -1,10 +1,10 @@
 package com.bun.notificationshistory;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
+import java.util.Calendar;
 
+
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.ComponentName;
@@ -13,40 +13,73 @@ import android.content.Intent;
 import android.net.Uri;
 import android.widget.RemoteViews;
 
+
 public class Not_Widget extends AppWidgetProvider{
+	
+	private PendingIntent service = null;  
 	
 	@Override
     public void onUpdate( Context context, AppWidgetManager appWidgetManager, int[] appWidgetIds )
     {
+		
+		
 		 // update each of the app widgets with the remote adapter
 	    for (int i = 0; i < appWidgetIds.length; ++i) {
+	    	
 	        
-	        // Set up the intent that starts the StackViewService, which will
-	        // provide the views for this collection.
 	        Intent intent = new Intent(context, GridWidgetService.class);
-	        // Add the app widget ID to the intent extras.
+	        
 	        intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetIds[i]);
 	        intent.setData(Uri.parse(intent.toUri(Intent.URI_INTENT_SCHEME)));
-	        // Instantiate the RemoteViews object for the app widget layout.
+	        
 	        RemoteViews rv = new RemoteViews(context.getPackageName(), R.layout.widget_layout);
-	        // Set up the RemoteViews object to use a RemoteViews adapter. 
-	        // This adapter connects
-	        // to a RemoteViewsService  through the specified intent.
-	        // This is how you populate the data.
+	        
 	        rv.setRemoteAdapter(appWidgetIds[i], R.id.widgetGridViewId, intent);
 	        
-	        // The empty view is displayed when the collection has no items. 
-	        // It should be in the same layout used to instantiate the RemoteViews
-	        // object above.
-	        rv.setEmptyView(R.id.widgetGridViewId, R.id.enptyWidgetId);
-
-	        //
-	        // Do additional processing specific to this app widget...
-	        //
 	        
+	        rv.setEmptyView(R.id.widgetGridViewId, R.id.enptyWidgetId);
+	        
+	        appWidgetManager.notifyAppWidgetViewDataChanged(appWidgetIds[i], R.id.widgetGridViewId);
+	        	        
 	        appWidgetManager.updateAppWidget(appWidgetIds[i], rv);   
 	    }
+	            
 	    super.onUpdate(context, appWidgetManager, appWidgetIds);
+    }
+	
+	@Override
+	public void onReceive(Context context, Intent intent) {
+		
+		super.onReceive(context, intent);
+		
+		AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(context);
+	    ComponentName thisAppWidget = new ComponentName(context.getPackageName(), Not_Widget.class.getName());
+	    int[] appWidgetIds = appWidgetManager.getAppWidgetIds(thisAppWidget);
+	        
+	    onUpdate(context, appWidgetManager, appWidgetIds);
+	   
+	}
+
+	@Override  
+    public void onDisabled(Context context)  
+    {  
+        final AlarmManager m = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);  
+  
+        m.cancel(service);  
+    }  
+	
+	 @Override
+    public void onEnabled(Context context)
+    {
+		Calendar calendar = Calendar.getInstance();
+        calendar.add(Calendar.MILLISECOND, 10000);
+
+        Intent alarmIntent = new Intent("AUTO_UPDATE");
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, alarmIntent, PendingIntent.FLAG_CANCEL_CURRENT);
+
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        // RTC does not wake the device up
+        alarmManager.setRepeating(AlarmManager.RTC, calendar.getTimeInMillis(), 1800000, pendingIntent);
     }
 	
 }

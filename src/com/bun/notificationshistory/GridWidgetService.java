@@ -1,6 +1,9 @@
 package com.bun.notificationshistory;
 
+
+
 import android.content.Intent;
+
 import android.widget.RemoteViewsService;
 
 public class GridWidgetService extends RemoteViewsService{
@@ -9,5 +12,6 @@ public class GridWidgetService extends RemoteViewsService{
 	public RemoteViewsFactory onGetViewFactory(Intent intent) {
 		return new GridRemoteViewsFactory(this.getApplicationContext(), intent);
 	}
-
+	
+	
 }

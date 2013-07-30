@@ -12,13 +12,14 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.RemoteViewsService.RemoteViewsFactory;
 
 public class GridRemoteViewsFactory implements RemoteViewsFactory{
 
 	private static final int mCount = 10;
-    private List<Notification> notList = new ArrayList<Notification>();
+    private List<Notification> notList = new ArrayList<Notification>();    
     private Context mContext;
     private int mAppWidgetId;
     private DBController controller;
@@ -94,7 +95,33 @@ public class GridRemoteViewsFactory implements RemoteViewsFactory{
 	}
 	@Override
 	public void onDataSetChanged() {
-		// TODO Auto-generated method stub
+		Log.d("changed", "changed");
+		notList.clear();
+		HashMap<String,Integer> widgetData = controller.getPieGraphData();
+		HashMap<String,String> appPackage = controller.getAppPackageMap();
+		LinkedHashMap<String,Integer> sortedMap = new LinkedHashMap<String,Integer>();
+		
+		sortedMap.putAll(widgetData);
+		
+		sortedMap = Utils.sortHashMapByValuesD(sortedMap);
+		
+		for(String app : sortedMap.keySet()){
+			Notification n = new Notification();
+			n.setAppName(app);
+			try{
+				Drawable icon;
+				if(app.equals("Google Talk")){
+					icon = mContext.getResources().getDrawable( R.drawable.googletalk );
+				}else{
+					icon = mContext.getPackageManager().getApplicationIcon(appPackage.get(app));
+				}
+				n.setAppIcon(icon);
+				n.setNotificationCount(sortedMap.get(app));
+				notList.add(n);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
 		
 	}
 	@Override
