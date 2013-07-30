@@ -2,6 +2,7 @@ package com.bun.notificationshistory;
 
 
 import java.util.HashMap;
+import java.util.Random;
 
 import org.achartengine.ChartFactory;
 import org.achartengine.GraphicalView;
@@ -74,12 +75,24 @@ public class Second_Graph_Activity extends Activity{
 	
 	public void fillPieChart(){
 		HashMap<String,Integer> pieChartValues = controller.getPieGraphData();
+		Integer count = 0;
         
 		for(String app : pieChartValues.keySet())
         {
+			int c =0;
+			
+			try{
+				c = COLORS[count];
+			
+			}catch(Exception e){
+				Random r = new Random();
+				c = Color.argb( 255, r.nextInt(255), r.nextInt(255), r.nextInt(255) );
+			}
+			
+			count++;
              mSeries.add(app, pieChartValues.get(app));
                 SimpleSeriesRenderer renderer = new SimpleSeriesRenderer();
-                renderer.setColor(COLORS[(mSeries.getItemCount() - 1) % COLORS.length]);
+                renderer.setColor(c);
                 mRenderer.addSeriesRenderer(renderer);
                 if (mChartView != null)
                    mChartView.repaint();    

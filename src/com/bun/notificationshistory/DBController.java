@@ -231,9 +231,11 @@ public class DBController  extends SQLiteOpenHelper {
 	    
 	    if (cursor.moveToFirst()) {
 	      do {
+	    	  
 	    	  if(cursor.getPosition() < count){
 	    		  continue;
 	    	  }
+	    	 
 	    	  wordList.add(cursor.getString(0));
 	        
 	      } while (cursor.moveToNext());
@@ -250,8 +252,12 @@ public class DBController  extends SQLiteOpenHelper {
 	    
 	    if (cursor.moveToFirst()) {
 	      do {
-	    	
-	    	  wordList.add(cursor.getString(0));
+	    	  if(cursor.getString(0) != null && cursor.getString(0).toUpperCase().equals("GOOGLE SERVICES FRAMEWORK")){
+	    		  wordList.add("Google Talk");		        
+		        }else{
+		        	wordList.add(cursor.getString(0));
+		        }
+	    	  //wordList.add(cursor.getString(0));
 	        
 	      } while (cursor.moveToNext());
 	    }

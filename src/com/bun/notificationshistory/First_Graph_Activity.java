@@ -291,7 +291,7 @@ public class First_Graph_Activity extends Activity{
 	  }
 
 	  private void onLeftSwipe() {
-		  Toast.makeText(First_Graph_Activity.this, "Left Swipe", Toast.LENGTH_SHORT).show();
+		  //Toast.makeText(First_Graph_Activity.this, "Left Swipe", Toast.LENGTH_SHORT).show();
 		  Intent intentG=new Intent(getApplicationContext(), Second_Graph_Activity.class);	    		    	
 		  startActivity(intentG);	
 		  finish();
