@@ -82,13 +82,23 @@ public class First_Graph_Activity extends Activity{
 		
 		ArrayList<HashMap<String,String>> graphData = controller.getLineGraphData();
 		
+		
+		
 		final ArrayList<String> days = controller.getLineGraphDays(); 
 		
 		final String[] daysArr;// = new String[days.size()];
 		
 		//daysArr = (String[]) days.toArray();
 		
-		String initApp = graphData.get(0).get("appName");
+		String initApp;
+		
+		if(graphData.size() == 0){
+			initApp = "";
+		}else{
+			initApp = graphData.get(0).get("appName");
+		}
+		
+		 
 		
 		ArrayList<String> topTenApps = controller.getTopTenApps();
 		

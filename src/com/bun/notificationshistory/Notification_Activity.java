@@ -62,6 +62,13 @@ public class Notification_Activity extends Activity{
 		controller = new DBController(this);	
 		populateNotificationAdapter(layout);
 		Boolean serviceStatus = isAccessibilityEnabled(this, accServiceId);
+		Boolean firstTimeRun = controller.getAllPreferences().get("FirstTimeTTSWarning").equals("No");
+		
+		if(firstTimeRun){
+			Intent intentG=new Intent(getApplicationContext(), Tutorial_1.class);	    		    	
+	    	startActivity(intentG);
+		}
+		
 		if(serviceStatus == false){
 			showServiceAlert();
 		}
@@ -70,7 +77,12 @@ public class Notification_Activity extends Activity{
 		
 		if(isSamsungPhoneWithTTS(ctx) && controller.getAllPreferences().get("FirstTimeTTSWarning").equals("No")){
 			
-			alertForSamsungTTS();			
+			alertForSamsungTTS();
+			
+		}
+		
+		if(firstTimeRun){
+			
 			HashMap<String,String> prefMap = new HashMap<String,String>();
 			prefMap.put("FirstTimeTTSWarning", "Yes");
 			controller.updatePreferences(prefMap);
@@ -88,7 +100,7 @@ public class Notification_Activity extends Activity{
 		alertDialog2.setTitle("Warning");
 
 		// Setting Dialog Message
-		alertDialog2.setMessage("Turn off the Talk back services for unexpected behaviour. Click on Yes to DISABLE the service.");
+		alertDialog2.setMessage(R.string.access_serv_warning);
 
 		// Setting Icon to Dialog
 		//alertDialog2.setIcon(R.drawable.delete);
