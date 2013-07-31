@@ -6,6 +6,10 @@ import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.ads.AdRequest;
+import com.google.ads.AdSize;
+import com.google.ads.AdView;
+
 
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.app.Activity;
@@ -50,7 +54,7 @@ public class Notification_Activity extends Activity{
 	ListView layout;
 	private String accServiceId = "com.bun.notificationshistory/com.bun.notificationshistory.Notification_Service";
 	private Context ctx;
-	
+	private AdView adView;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,8 @@ public class Notification_Activity extends Activity{
 		populateNotificationAdapter(layout);
 		Boolean serviceStatus = isAccessibilityEnabled(this, accServiceId);
 		Boolean firstTimeRun = controller.getAllPreferences().get("FirstTimeTTSWarning").equals("No");
+		
+		adView = new AdView(this, AdSize.BANNER, "a151f8df85e7f3a");
 		
 		if(firstTimeRun){
 			Intent intentG=new Intent(getApplicationContext(), Tutorial_1.class);	    		    	
@@ -89,9 +95,18 @@ public class Notification_Activity extends Activity{
 			
 		}
 		registerForContextMenu(layout);
+		adView.loadAd(new AdRequest());
         	
 	}
 	
+	 @Override
+	  public void onDestroy() {
+	    if (adView != null) {
+	      adView.destroy();
+	    }
+	    super.onDestroy();
+	  }
+	 
 	private void alertForSamsungTTS(){
 		AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
 		        Notification_Activity.this);

@@ -65,10 +65,8 @@ public class First_Graph_Activity extends Activity{
     PointF firstFinger;
     float lastScrolling;
     float distBetweenFingers;
-    float lastZooming;
-	
-    private PointF minXY;
-    private PointF maxXY;
+    float lastZooming;	
+ 
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -120,6 +118,8 @@ public class First_Graph_Activity extends Activity{
 		String prevApp = "";
 		
 		ArrayList<String> daysCovered = new ArrayList<String>();
+		
+		ArrayList<String> processedApps = new ArrayList<String>();
 		
 		for(HashMap<String,String> hm : graphData){
 			
@@ -180,6 +180,7 @@ public class First_Graph_Activity extends Activity{
 					seriesList.addAll(tempList);
 					
 				}
+				
 				daysCovered.clear();
 				daysCovered.add(hm.get("notTime"));
 			}
@@ -188,6 +189,9 @@ public class First_Graph_Activity extends Activity{
 			if(populateSeries){
 				
 				//seriesNumbers = (Number[])seriesSet.toArray();
+				seriesList.add(0, 0);
+				
+				processedApps.add(prevApp);
 				
 				XYSeries series2 = new SimpleXYSeries(seriesList, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, prevApp);
 				 
@@ -215,6 +219,31 @@ public class First_Graph_Activity extends Activity{
 		        seriesList.clear();		        
 		        
 		        seriesList.add(tempSeriesNumber);
+		        
+		        if(count == graphData.size() && !processedApps.contains(initApp)){
+		        	seriesList.add(0, 0);
+					
+		        	XYSeries series3 = new SimpleXYSeries(seriesList, SimpleXYSeries.ArrayFormat.Y_VALS_ONLY, initApp);
+					 
+					
+					
+					try{
+						c = colorArr[colorCounter];
+					}catch(Exception e){
+						colorCounter = 0;
+						c = colorArr[colorCounter];
+					}
+					
+					LineAndPointFormatter series2Format1 = new LineAndPointFormatter(c,Color.BLACK, 
+			        											Color.rgb(200, 200, 200),null);
+			        
+			        		        
+					series2Format1.setFillPaint(null);
+			        if(topTenApps.contains(prevApp)){
+			        	plot.addSeries(series3, series2Format1);
+			        	colorCounter++;
+			        }
+		        }
 		        
 		        populateSeries = false;
 		        
@@ -251,6 +280,7 @@ public class First_Graph_Activity extends Activity{
         // reduce the number of range labels
         plot.setTicksPerRangeLabel(1);
         plot.getGraphWidget().setDomainLabelOrientation(-45);
+        
          
         //plot.getBackgroundPaint().setColor(Color.WHITE);
         
@@ -259,9 +289,14 @@ public class First_Graph_Activity extends Activity{
  
             @Override
             public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
-            	String s = String.valueOf(days.get( ( (Number)obj).intValue())) ;
+            	
             	int ind = (int)Math.ceil((Double)obj);
-            	String val = days.get( ind ).split("-")[0] + "-" + days.get( ind ).split("-")[1]; 
+            	String val = "";
+            	if(ind == 0){
+            		val = "";
+            	}else{
+            		val = days.get( ind -1 ).split("-")[0] + "-" + days.get( ind - 1 ).split("-")[1];
+            	}
                 return new StringBuffer( val);
             }
  
@@ -272,14 +307,12 @@ public class First_Graph_Activity extends Activity{
 
         };
         
-        plot.setDomainStep(XYStepMode.SUBDIVIDE, days.size());
+        plot.setDomainStep(XYStepMode.SUBDIVIDE, days.size() + 1);
         plot.setDomainValueFormat(f);
 		
         plot.setPlotMarginBottom(15);
-        plot.setDomainLabel("");
-       		
-        minXY=new PointF(plot.getCalculatedMinX().floatValue(),plot.getCalculatedMinY().floatValue());
-        maxXY=new PointF(plot.getCalculatedMaxX().floatValue(),plot.getCalculatedMaxY().floatValue());
+        plot.setDomainLabel(""); 
+        
         
         
 		
