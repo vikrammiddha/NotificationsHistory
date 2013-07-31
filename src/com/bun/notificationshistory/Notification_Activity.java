@@ -254,7 +254,7 @@ public class Notification_Activity extends Activity{
 	    
 		for(int i=0; i< menu.size(); i++){
 			MenuItem mi = menu.getItem(i);
-			if(i == 0){
+			if(i == 1){
 				
 				HashMap<String,String> preferences = controller.getAllPreferences();
 				
@@ -301,6 +301,11 @@ public class Notification_Activity extends Activity{
         	        	
 	    	Intent intent=new Intent(getApplicationContext(), Ignored_Apps_Activity.class);	    		    	
 	    	startActivity(intent);	    	
+        	break;
+        	
+        case R.id.air_push_id:
+        	Intent intentA=new Intent(getApplicationContext(), DetectorActivity.class);	    		    	
+	    	startActivity(intentA);	    	
         	break;
         	
         default:

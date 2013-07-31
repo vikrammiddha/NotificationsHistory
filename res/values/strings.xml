@@ -14,5 +14,21 @@
     <string name="tut_2_string">Ignore app will remove the notifications from specific app in this app.\n\nUnwanted apps can be uninstalled by long click on that app.\n\nDelete Icon removes the notification of specific app.\n\nClick on any app to see the detailed notifications.</string>
     <string name="tut_3_string">Select the ignored apps to remove them from the ignored list.</string>
     <string name="tut_4_string">Turn on the accessibility service in order to allow Notification Tracker to record all the 3rd party apps.</string>
+     
+    <string name="refresh">Start Scanning</string>
+    <string name="progress_dialog_text">Scanning app %1$d/%2$d</string>
+    <string name="app_icon_content_description">Advertising application\'s icon</string>
+    <string name="list_item_ad_framework_prefix">Ad framework</string>
+    <string name="no_ad_apps">No apps found with notifications add.\n\nIf you\'re seeing notification ads anyway, there\'s probably a new advertising company the detector doesn\'t know about yet.\n\nIf you\'d like to help, you can use the button below to email a list of your installed apps to us (the dnotification tracker developer).\n\n Your email address and installed applications will not be shared with anyone else.</string>
+    <string name="report">I\'d like to help!</string>
+    <string name="no_report">No, thanks</string>
+    <string name="send_email_with">Send the report with:</string>
+    <string name="report_email_subject">Notification Tracker Air push Report</string>
+	<string name="report_email_body_prefix">I\'d like to help improve the Notification Tracker! Here is a list of potentially suspicious apps I have installed:</string>
+	<string name="progress_dialog_title">Scanning&#8230;</string>
+	<string name="native_detection_dialog_title">Your device is awesome!</string>
+	<string name="native_detection_dialog_message">Good news! You don\'t need this app at all! Just press and hold on the notification for a few seconds, and your device should tell you who is creating it.</string>
+	<string name="native_detection_dialog_button_use_native">Thanks, I\'ll do that!</string>
+	<string name="native_detection_dialog_button_use_app">It didn\'t work!</string>
 
 </resources>

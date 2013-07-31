@@ -5,6 +5,10 @@
          Set id, icon and Title for each menu item
     -->
    
+   <item android:id="@+id/air_push_id"
+         
+          android:title="Scan Apps for Airpush Ads"
+           />
     
     <item android:id="@+id/group_notifications"
          
