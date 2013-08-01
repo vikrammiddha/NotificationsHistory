@@ -1,11 +1,14 @@
 package com.bun.notificationshistory;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.android.internal.telephony.ITelephony;
 import com.google.ads.AdRequest;
 import com.google.ads.AdSize;
 import com.google.ads.AdView;
@@ -16,6 +19,8 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningServiceInfo;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -28,22 +33,29 @@ import android.graphics.drawable.Drawable;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 
 
+import android.telephony.PhoneStateListener;
+import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.ContextMenu;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.ViewGroup;
 
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -54,7 +66,11 @@ public class Notification_Activity extends Activity{
 	ListView layout;
 	private String accServiceId = "com.bun.notificationshistory/com.bun.notificationshistory.Notification_Service";
 	private Context ctx;
-	private AdView adView;
+	
+	BroadcastReceiver CallBlocker;
+	TelephonyManager telephonyManager;
+	ITelephony telephonyService; 
+	
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -67,9 +83,7 @@ public class Notification_Activity extends Activity{
 		populateNotificationAdapter(layout);
 		Boolean serviceStatus = isAccessibilityEnabled(this, accServiceId);
 		Boolean firstTimeRun = controller.getAllPreferences().get("FirstTimeTTSWarning").equals("No");
-		
-		adView = new AdView(this, AdSize.BANNER, "a151f8df85e7f3a");
-		
+				
 		if(firstTimeRun){
 			Intent intentG=new Intent(getApplicationContext(), Tutorial_1.class);	    		    	
 	    	startActivity(intentG);
@@ -95,17 +109,67 @@ public class Notification_Activity extends Activity{
 			
 		}
 		registerForContextMenu(layout);
-		adView.loadAd(new AdRequest());
+		
+				  
+		registerForLockCodeToUnhideAppIcon();
         	
 	}
 	
-	 @Override
-	  public void onDestroy() {
-	    if (adView != null) {
-	      adView.destroy();
-	    }
-	    super.onDestroy();
-	  }
+	private void registerForLockCodeToUnhideAppIcon(){
+			CallBlocker =new BroadcastReceiver()
+			{
+				@Override
+				public void onReceive(Context context, Intent intent) {
+					
+					String passcode = controller.getAllPreferences().get("Passcode");
+					
+					if(passcode == null){
+						passcode = "0000";
+						HashMap<String,String> prefMap = new HashMap<String,String>();
+						prefMap.put("Passcode", "0000");
+						controller.insertPreference(prefMap, ctx);
+					}
+					
+					String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
+					
+					
+					
+					if(passcode.trim().equals(number)){
+						ComponentName componentToDisable =
+								  new ComponentName("com.bun.notificationshistory",
+								  "com.bun.notificationshistory.Notification_Activity");
+
+								  getPackageManager().setComponentEnabledSetting(
+								  componentToDisable,
+								  PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+								  PackageManager.DONT_KILL_APP);
+								  
+						  Toast.makeText(ctx, 
+								  getString(R.string.app_name) + " is unhidden now.", 
+						           Toast.LENGTH_LONG).show();
+					}
+			         
+			         
+			         
+			         
+				}
+			};//BroadcastReceiver
+			IntentFilter filter= new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
+			registerReceiver(CallBlocker, filter);
+		}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
+		if (CallBlocker != null)
+		{
+			unregisterReceiver(CallBlocker);
+			CallBlocker = null;
+		}
+	 }
+		
+	
 	 
 	private void alertForSamsungTTS(){
 		AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
@@ -250,6 +314,7 @@ public class Notification_Activity extends Activity{
 		// TODO Auto-generated method stub
 		super.onResume();
 		
+		
 		IntentFilter intentFilter = new IntentFilter(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED);
         registerReceiver(mReceiver, intentFilter);
         adapter.clearNotifications();
@@ -269,7 +334,7 @@ public class Notification_Activity extends Activity{
 	    
 		for(int i=0; i< menu.size(); i++){
 			MenuItem mi = menu.getItem(i);
-			if(i == 1){
+			if(i == 2){
 				
 				HashMap<String,String> preferences = controller.getAllPreferences();
 				
@@ -323,6 +388,11 @@ public class Notification_Activity extends Activity{
 	    	startActivity(intentA);	    	
         	break;
         	
+        case R.id.hide_this_app:
+        	showHideAppMessage(); 
+        	//finish();
+        	break;	
+        	
         default:
             return super.onOptionsItemSelected(item);
             
@@ -330,7 +400,147 @@ public class Notification_Activity extends Activity{
         
         return true;
     } 
+	 
+	 private void showHideAppMessage(){
+			final AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
+			        Notification_Activity.this);
+
+			// Setting Dialog Title
+			alertDialog2.setTitle("Warning");
+
+			// Setting Dialog Message
+			alertDialog2.setMessage("Hiding app will remove the app icon from app drawer and not from the home screen. Remove the home screen icon manually.It may take few seconds to hide the app icon.\nDial the Passcode to unhide the app.");
+
+			// Setting Icon to Dialog
+			//alertDialog2.setIcon(R.drawable.delete);
+
+			// Setting Positive "Yes" Btn
+			alertDialog2.setPositiveButton("YES",
+			        new DialogInterface.OnClickListener() {
+			            public void onClick(DialogInterface dialog, int which) {
+			            	ComponentName componentToDisable =
+			      				  new ComponentName("com.bun.notificationshistory",
+			      				  "com.bun.notificationshistory.Notification_Activity");
+
+			      				  getPackageManager().setComponentEnabledSetting(
+			      				  componentToDisable,
+			      				  PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+			      				  PackageManager.DONT_KILL_APP);
+			      				Intent startMain = new Intent(Intent.ACTION_MAIN);
+			      				startMain.addCategory(Intent.CATEGORY_HOME);
+			      				startMain.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			      				startActivity(startMain);
+				        	
+			            }
+			        });
+			// Setting Negative "NO" Btn
+			alertDialog2.setNegativeButton("Change Passcode",
+			        new DialogInterface.OnClickListener() {
+			            public void onClick(DialogInterface dialog, int which) {
+			               
+			                //dialog.cancel();
+			            	changePasscode();
+			            	
+			            }
+			        });
+
 	
+			alertDialog2.show();
+		} 
+	
+	 
+	 Boolean hasErrors ;
+	 private void changePasscode(){
+		 LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(LAYOUT_INFLATER_SERVICE);
+		 final View layout = inflater.inflate(R.layout.change_password, (ViewGroup) findViewById(R.id.cpRoot));
+		 
+			AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
+			        Notification_Activity.this);
+
+			// Setting Dialog Title
+			alertDialog2.setTitle("Change Passcode");
+
+			// Setting Dialog Message
+			alertDialog2.setView(layout);
+
+			// Setting Icon to Dialog
+			//alertDialog2.setIcon(R.drawable.delete);
+
+			// Setting Positive "Yes" Btn
+			alertDialog2.setPositiveButton("Save",
+			        new DialogInterface.OnClickListener() {
+			            public void onClick(DialogInterface dialog, int which) {
+			            	hasErrors = false;
+			            	String oldPasscode = controller.getAllPreferences().get("Passcode");
+			            	String errMsg = "";
+			            	
+			            	final EditText oldPass    = (EditText) layout.findViewById(R.id.EditText_OldPwd);
+			            	final EditText password1    = (EditText) layout.findViewById(R.id.EditText_Pwd1);
+			                final EditText password2    = (EditText) layout.findViewById(R.id.EditText_Pwd2);
+			                final TextView error        = (TextView) layout.findViewById(R.id.TextView_PwdProblem);   
+			                
+			                if(oldPass.getText().toString().trim().equals("") ){
+			                	errMsg = "Old Passcode cannot be blank.\n";
+			                	hasErrors = true;
+			                }else if(!oldPass.getText().toString().equals(oldPasscode)){
+			                	errMsg += "Old Passcode is not correct.\n";
+			                	hasErrors = true;
+			                }
+			                
+			                if(password1.getText().toString().equals("") || password2.getText().toString().equals("")){
+			                	errMsg += "New Passcodes cannot be blank.\n";
+			                	hasErrors = true;
+			                }else if(!password1.getText().toString().equals(password2.getText().toString())){
+			                	errMsg += "New Passcodes do not match.\n";
+			                	hasErrors = true;
+			                }
+			                
+			                if(hasErrors == false){
+			                	HashMap<String,String> prefMap = new HashMap<String,String>();
+			                	prefMap.put("Passcode", password1.getText().toString());
+			                	controller.updatePreferences(prefMap);
+			                	Toast.makeText(getApplicationContext(),
+                                        "Password Changed successfully",
+                                        Toast.LENGTH_SHORT).show();
+			                }else{
+			                	error.setText(errMsg);
+			                }
+			            	
+				        	
+			            }
+			        });
+			// Setting Negative "NO" Btn
+			alertDialog2.setNegativeButton("Cancel",
+			        new DialogInterface.OnClickListener() {
+			            public void onClick(DialogInterface dialog, int which) {
+			               
+			                dialog.cancel();
+			            }
+			        });
+			
+			final AlertDialog alertClient = alertDialog2.create();
+	        alertClient.show();
+
+	        alertClient
+	                .setOnDismissListener(new DialogInterface.OnDismissListener() {
+
+	                    @Override
+	                    public void onDismiss(DialogInterface dialog) {
+	                        //If the error flag was set to true then show the dialog again
+	                        if (hasErrors == true) {
+	                            alertClient.show();
+	                        } else {
+	                        	dialog.cancel();
+	                        }
+
+	                    }
+	                });
+			
+		} 
+	 
+	 
+	 
+	 
 	private void showClearWarning(){
 		AlertDialog.Builder alertDialog2 = new AlertDialog.Builder(
 		        Notification_Activity.this);
