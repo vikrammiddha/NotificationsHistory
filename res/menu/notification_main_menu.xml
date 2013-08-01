@@ -22,7 +22,7 @@
      
      <item android:id="@+id/view_graphs"
          
-          android:title="View Graphs"
+          android:title="View Graphs(Pro)"
            />
     
     <item android:id="@+id/menu_clear"

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Notifications Tracker</string>
+    <string name="app_name">Notifications Tracker Free</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
     <string name="clear_warning">Are you sure you want to delete all the notification history data ?</string>
