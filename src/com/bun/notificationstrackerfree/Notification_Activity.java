@@ -344,7 +344,7 @@ public class Notification_Activity extends Activity{
 			alertDialog2.setPositiveButton("Buy",
 			        new DialogInterface.OnClickListener() {
 			            public void onClick(DialogInterface dialog, int which) {
-			            	Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse("market://details?id=com.evanhe.nhfree"));
+			            	Intent intent = new Intent(Intent.ACTION_VIEW,Uri.parse("market://details?id=com.bun.notificationshistory"));
 			            	startActivity(intent);
 				        	
 			            }
@@ -454,7 +454,7 @@ public class Notification_Activity extends Activity{
 		        Notification_Activity.this);
 
 		// Setting Dialog Title
-		alertDialog2.setTitle("Notifications History service");
+		alertDialog2.setTitle("Notifications Tracker service");
 
 		// Setting Dialog Message
 		alertDialog2.setMessage(R.string.service_warning);
