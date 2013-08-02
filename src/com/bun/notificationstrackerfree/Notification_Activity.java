@@ -360,7 +360,7 @@ public class Notification_Activity extends Activity{
 			alertDialog2.setTitle("Warning");
 
 			// Setting Dialog Message
-			alertDialog2.setMessage("Hiding app will remove the app icon from app drawer and not from the home screen. Remove the home screen icon manually.It may take few seconds to hide the app icon.\nDial the Passcode to unhide the app.");
+			alertDialog2.setMessage(getString(R.string.hide_app));
 
 			// Setting Icon to Dialog
 			//alertDialog2.setIcon(R.drawable.delete);
