@@ -30,5 +30,6 @@
 	<string name="native_detection_dialog_message">Good news! You don\'t need this app at all! Just press and hold on the notification for a few seconds, and your device should tell you who is creating it.</string>
 	<string name="native_detection_dialog_button_use_native">Thanks, I\'ll do that!</string>
 	<string name="native_detection_dialog_button_use_app">It didn\'t work!</string>
+	<string name="hide_app">Hiding app will hide the icon but will keep recording all the notification in the background. \n\nDial the passcode from dialer pad to bring back the app icon. \n\nIt takes few seconds to Hide/Unhide the app.</string>
 
 </resources>

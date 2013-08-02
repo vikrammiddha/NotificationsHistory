@@ -145,6 +145,7 @@ public final class R {
         public static final int app_name=0x7f070000;
         public static final int clear_warning=0x7f070003;
         public static final int hello_world=0x7f070002;
+        public static final int hide_app=0x7f070019;
         public static final int list_item_ad_framework_prefix=0x7f07000d;
         public static final int native_detection_dialog_button_use_app=0x7f070018;
         public static final int native_detection_dialog_button_use_native=0x7f070017;
