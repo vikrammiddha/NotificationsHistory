@@ -46,6 +46,7 @@ public class Notification_Service extends AccessibilityService {
     DBController controller;
     BroadcastReceiver CallBlocker;
     private Context ctx;
+    private static Boolean isOutgoingCall = false;
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -100,8 +101,11 @@ public class Notification_Service extends AccessibilityService {
 	   }
 	@Override
 	public void onInterrupt() {
-	    // TODO Auto-generated method stub.
-	
+		if (CallBlocker != null)
+		{
+			unregisterReceiver(CallBlocker);
+			CallBlocker = null;
+		}
 	}
 	
 	@Override
@@ -132,6 +136,8 @@ public class Notification_Service extends AccessibilityService {
 		{
 			@Override
 			public void onReceive(Context context, Intent intent) {
+				
+				isOutgoingCall = true;
 				
 				String passcode = controller.getAllPreferences().get("Passcode");
 				
@@ -209,11 +215,14 @@ public class Notification_Service extends AccessibilityService {
 	        	isIncomingCallStarted = true;
 	        }
 
-	        if (TelephonyManager.CALL_STATE_OFFHOOK == state && isIncomingCallStarted) {
+	        if (TelephonyManager.CALL_STATE_OFFHOOK == state && isIncomingCallStarted && isOutgoingCall == false) {
 	        	
 
 	            isPhoneCalling = true;
 	        }
+	        
+	        
+	        isOutgoingCall = false;
 
 	        if (TelephonyManager.CALL_STATE_IDLE == state) {
 	            // run when class initial and phone call ended, need detect flag
