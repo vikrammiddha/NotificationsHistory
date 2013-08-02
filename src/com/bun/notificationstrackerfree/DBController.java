@@ -359,6 +359,7 @@ public class DBController  extends SQLiteOpenHelper {
 		HashMap<String,String> map = new HashMap<String,String>();
 		map.put("NotificationGroupBy", "GroupByDay");
 		map.put("FirstTimeTTSWarning", "No");
+		map.put("Passcode", "0000");
 		
 		ContentValues values = new ContentValues();
 		for(String key : map.keySet()){

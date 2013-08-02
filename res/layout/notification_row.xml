@@ -54,7 +54,7 @@
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#0F1A5E" 
         android:layout_weight="85"
-        android:paddingRight="20dp"
+        android:paddingRight="10dp"
         />
      
      <ImageView

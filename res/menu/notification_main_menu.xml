@@ -4,6 +4,11 @@
     <!-- Single menu item 
          Set id, icon and Title for each menu item
     -->
+    
+    <item android:id="@+id/hide_this_app"
+         
+          android:title="Hide this app"
+           />
    
    <item android:id="@+id/air_push_id"
          

@@ -17,7 +17,7 @@
     
     <com.google.ads.AdView android:id="@+id/adView1"
                          android:layout_width="fill_parent"
-                         android:layout_height="fill_parent"
+                         android:layout_height="wrap_content"
                          ads:adUnitId="a151f8df85e7f3a"
                          ads:adSize="BANNER"
                          android:layout_weight="90"                         
