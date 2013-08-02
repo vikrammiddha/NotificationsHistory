@@ -111,52 +111,11 @@ public class Notification_Activity extends Activity{
 		registerForContextMenu(layout);
 		
 				  
-		registerForLockCodeToUnhideAppIcon();
+		//registerForLockCodeToUnhideAppIcon();
         	
 	}
 	
-	private void registerForLockCodeToUnhideAppIcon(){
-			CallBlocker =new BroadcastReceiver()
-			{
-				@Override
-				public void onReceive(Context context, Intent intent) {
-					
-					String passcode = controller.getAllPreferences().get("Passcode");
-					
-					if(passcode == null){
-						passcode = "0000";
-						HashMap<String,String> prefMap = new HashMap<String,String>();
-						prefMap.put("Passcode", "0000");
-						controller.insertPreference(prefMap, ctx);
-					}
-					
-					String number = intent.getStringExtra(Intent.EXTRA_PHONE_NUMBER);
-					
-					
-					
-					if(passcode.trim().equals(number)){
-						ComponentName componentToDisable =
-								  new ComponentName("com.bun.notificationshistory",
-								  "com.bun.notificationshistory.Notification_Activity");
-
-								  getPackageManager().setComponentEnabledSetting(
-								  componentToDisable,
-								  PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-								  PackageManager.DONT_KILL_APP);
-								  
-						  Toast.makeText(ctx, 
-								  getString(R.string.app_name) + " is unhidden now.", 
-						           Toast.LENGTH_LONG).show();
-					}
-			         
-			         
-			         
-			         
-				}
-			};//BroadcastReceiver
-			IntentFilter filter= new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
-			registerReceiver(CallBlocker, filter);
-		}
+	
 	
 	@Override
 	protected void onDestroy() {
@@ -449,7 +408,7 @@ public class Notification_Activity extends Activity{
 		} 
 	
 	 
-	 Boolean hasErrors ;
+	 Boolean hasErrors =false;
 	 private void changePasscode(){
 		 LayoutInflater inflater = (LayoutInflater) ctx.getSystemService(LAYOUT_INFLATER_SERVICE);
 		 final View layout = inflater.inflate(R.layout.change_password, (ViewGroup) findViewById(R.id.cpRoot));
@@ -530,7 +489,7 @@ public class Notification_Activity extends Activity{
 	                        if (hasErrors == true) {
 	                            alertClient.show();
 	                        } else {
-	                        	dialog.cancel();
+	                        	
 	                        }
 
 	                    }
