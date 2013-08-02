@@ -472,7 +472,7 @@ public class Notification_Activity extends Activity{
 			alertDialog2.setNegativeButton("Cancel",
 			        new DialogInterface.OnClickListener() {
 			            public void onClick(DialogInterface dialog, int which) {
-			               
+			            	hasErrors = false;
 			                dialog.cancel();
 			            }
 			        });
