@@ -10,7 +10,7 @@
 	        android:layout_width="fill_parent"
 	        android:layout_height="fill_parent"
 	        android:background="#FFFFFF"
-	        android:text="Welcome to Notifiction Tracker"
+	        android:text="Welcome to Notifictions Spy"
 	        android:gravity="center"
 	        android:textAppearance="?android:attr/textAppearanceSmall"
 	        android:textColor="#3399FF"
