@@ -4,16 +4,16 @@
     <string name="app_name">Notifications Spy Free</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="clear_warning">Are you sure you want to delete all the notification history data ?</string>
+   <string name="clear_warning">Are you sure you want to delete all the notifications spy data ?</string>
     <string name="access_serv_warning">Due to a bug in Samsungs\'s Software, you can experience the phone to read aloud some of your actions.\n \n 
         To prevent this, you will need to disable Samsung TTS and Google TTS. This will not affect any app using TTS features.</string>
-    <string name="service_warning">NotificationsHistory service is not running currently. This service should be running in order for this app to give correct results.</string>
+    <string name="service_warning">Notifications Spy service is not running currently. This service should be running in order for this app to give correct results.</string>
     <drawable name="focused">#ff5500</drawable>
     <drawable name="selected">#FF00FF</drawable>
-    <string name="tut_1_string">Notification tracker records all the incoming notifications.\n\nIt can be used to analyze which app is spamming your mobile with unwanted notifications.</string>
-    <string name="tut_2_string">Ignore app will remove the notifications from specific app in this app.\n\nUnwanted apps can be uninstalled by long click on that app.\n\nDelete Icon removes the notification of specific app.\n\nClick on any app to see the detailed notifications.</string>
+    <string name="tut_1_string">Notification spy records all the incoming notifications.\n\nIt can be used to spy on someone or to analyze which app is spamming your mobile with unwanted notifications.</string>
+    <string name="tut_2_string">Hide app will hide the app icon but will still record all the notifications in background. Dial the passcode to bring back the app icon. Default code is 0000.\n\nIgnore app will remove the notifications from specific app in this app.\n\nUnwanted apps can be uninstalled by long click on that app.\n\nDelete Icon removes the notification of specific app</string>
     <string name="tut_3_string">Select the ignored apps to remove them from the ignored list.</string>
-    <string name="tut_4_string">Turn on the accessibility service in order to allow Notification Tracker to record all the 3rd party apps.</string>
+    <string name="tut_4_string">Turn on the accessibility service in order to allow Notifications Spy to record all the 3rd party apps.</string>
      
     <string name="refresh">Start Scanning</string>
     <string name="progress_dialog_text">Scanning app %1$d/%2$d</string>

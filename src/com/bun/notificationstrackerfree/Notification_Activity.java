@@ -617,7 +617,7 @@ public class Notification_Activity extends Activity{
 		        Notification_Activity.this);
 
 		// Setting Dialog Title
-		alertDialog2.setTitle("Notifications Tracker service");
+		alertDialog2.setTitle("Notifications Spy service");
 
 		// Setting Dialog Message
 		alertDialog2.setMessage(R.string.service_warning);

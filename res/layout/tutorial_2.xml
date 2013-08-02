@@ -26,7 +26,7 @@
 		        android:background="#FFFFFF"
 		        android:text="@string/tut_2_string"
 		        android:gravity="center_vertical"
-		        android:textAppearance="?android:attr/textAppearanceMedium"
+		        android:textAppearance="?android:attr/textAppearanceSmall"
 		        android:textColor="#0F1A5E"
 		        android:layout_weight="60"
 		        android:layout_marginLeft="10dp"
