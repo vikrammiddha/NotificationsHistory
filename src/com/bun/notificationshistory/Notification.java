@@ -1,9 +1,20 @@
 package com.bun.notificationshistory;
 
+import java.io.Serializable;
+
+import android.app.PendingIntent;
 import android.graphics.drawable.Drawable;
 
-public class Notification {
+public class Notification implements Serializable{
 	
+	PendingIntent pi;
+	
+	public PendingIntent getPi() {
+		return pi;
+	}
+	public void setPi(PendingIntent pi) {
+		this.pi = pi;
+	}
 	Boolean isRowChecked;
 	
 	public Boolean getIsRowChecked() {

@@ -1,5 +1,6 @@
 package com.bun.notificationshistory;
 
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -7,7 +8,11 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+
+
 public class Utils {
+	
+	public static HashMap<String, Notification> notMap = new HashMap<String, Notification>();
 
 	public static LinkedHashMap<String,Integer> sortHashMapByValuesD(LinkedHashMap<String,Integer> passedMap) {
 		   List mapKeys = new ArrayList(passedMap.keySet());

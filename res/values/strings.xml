@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Notifications Spy</string>
+    <string name="app_name">Notifications Tracker</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="clear_warning">Are you sure you want to delete all the notifications spy data ?</string>
+    <string name="clear_warning">Are you sure you want to delete all the notifications tracker data ?</string>
     <string name="access_serv_warning">Due to a bug in Samsungs\'s Software, you can experience the phone to read aloud some of your actions.\n \n 
         To prevent this, you will need to disable Samsung TTS and Google TTS. This will not affect any app using TTS features.</string>
-    <string name="service_warning">Notifications Spy service is not running currently. This service should be running in order for this app to give correct results.</string>
+    <string name="service_warning">Notifications Tracker service is not running currently. This service should be running in order for this app to give correct results.</string>
     <drawable name="focused">#ff5500</drawable>
     <drawable name="selected">#FF00FF</drawable>
     <string name="tut_1_string">Notification spy records all the incoming notifications.\n\nIt can be used to spy on someone or to analyze which app is spamming your mobile with unwanted notifications.</string>
@@ -31,5 +31,21 @@
 	<string name="native_detection_dialog_button_use_native">Thanks, I\'ll do that!</string>
 	<string name="native_detection_dialog_button_use_app">It didn\'t work!</string>
 	<string name="hide_app">Hiding app will hide the icon but will keep recording all the notification in the background. \n\nDial the passcode from dialer pad to bring back the app icon. \n\nIt takes few seconds to Hide/Unhide the app.</string>
+	
+	  <style name="ButtonText">
+    <item name="android:layout_width">fill_parent</item>
+    <item name="android:layout_height">wrap_content</item>
+    <item name="android:textColor">#ffffff</item>
+    <item name="android:gravity">center</item>
+    <item name="android:layout_margin">3dp</item>
+    <item name="android:textSize">30dp</item>
+    <item name="android:textStyle">bold</item>
+    <item name="android:shadowColor">#000000</item>
+    <item name="android:shadowDx">1</item>
+    <item name="android:shadowDy">1</item>
+    <item name="android:shadowRadius">2</item>
+    </style>
 
 </resources>
+
+

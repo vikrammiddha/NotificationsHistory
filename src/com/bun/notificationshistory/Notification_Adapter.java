@@ -6,9 +6,13 @@ import java.util.Date;
 
 
 import android.graphics.Color;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.LinearInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
@@ -45,6 +49,8 @@ public class Notification_Adapter extends BaseAdapter{
 
 	@Override
 	public View getView(int position, View view, ViewGroup parent) {
+		
+		Boolean isUnread = false;
 		Notification n = nList.get(position);
 		if(view == null){
 			LayoutInflater inflater =
@@ -80,10 +86,29 @@ public class Notification_Adapter extends BaseAdapter{
 					LayoutInflater.from(parent.getContext());
 			view = inflater.inflate(
 					R.layout.notification_row, parent, false);
-			View v = view.findViewById(R.id.notificationRowTextViewId);
+			View v = view.findViewById(R.id.unreadCountTextId);
+			
+			TextView unreadCountTextView = (TextView)v;
+			
+			if(Utils.notMap.get(n.getPackageName()) != null){
+				isUnread = true;
+				String count = Integer.toString(Utils.notMap.get(n.getPackageName()).getNotificationCount());
+				if(count.length() == 1){
+					count += " ";
+				}
+				unreadCountTextView.setText(count);
+			}else{
+				unreadCountTextView.setText("");
+			}
+			
+			v = view.findViewById(R.id.notificationRowTextViewId);
 			TextView timeTextView = (TextView)v;
 			
 			timeTextView.setText(n.getAppName() );
+			
+			if(isUnread){
+				timeTextView.setTypeface(null, Typeface.BOLD);
+			}
 			
 			v = view.findViewById(R.id.appImageViewId);
 			
@@ -91,6 +116,17 @@ public class Notification_Adapter extends BaseAdapter{
 			
 			if(n.getAppIcon() != null)
 				iv.setImageDrawable(n.getAppIcon());
+			
+			iv.setTag(n.getPackageName());
+			
+			if(isUnread){
+				AlphaAnimation  blinkanimation= new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
+				blinkanimation.setDuration(500); // duration - half a second
+				blinkanimation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
+				blinkanimation.setRepeatCount(500); // Repeat animation infinitely
+				blinkanimation.setRepeatMode(Animation.REVERSE);
+				iv.setAnimation(blinkanimation);
+			}
 			
 			v = view.findViewById(R.id.notificationCountId);
 			
@@ -103,9 +139,17 @@ public class Notification_Adapter extends BaseAdapter{
 				iv.setVisibility(View.GONE);
 			}
 			
+			if(isUnread){
+				countText.setTypeface(null, Typeface.BOLD);
+			}
+			
 			v = view.findViewById(R.id.lastActivityDateId);
 			
 			TextView lastActivityDateText = (TextView)v;
+			
+			if(isUnread){
+				lastActivityDateText.setTypeface(null, Typeface.BOLD);
+			}
 			
 			lastActivityDateText.setText( n.getLastActivityDate() != null ? ("Last: " + n.getLastActivityDate())  : "- * -");
 			

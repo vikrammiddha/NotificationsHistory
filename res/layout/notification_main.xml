@@ -8,10 +8,23 @@
     <ListView
 		android:id="@+id/notificationsListViewId"
 		android:layout_width="fill_parent"
-		android:layout_height="wrap_content" 
+		android:layout_height="fill_parent" 
+		android:layout_weight="10"
 		android:divider="#0C0A42"
 		android:dividerHeight="3px"
 		/>
+    
+         
+     <Button
+        android:id="@+id/clearUnreadNotsId"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_weight="90"
+        
+        android:text="Clear Unread Notifications"
+        android:onClick="clearNotifications"
+        android:layout_gravity="center"
+        />
     
 
 </LinearLayout>

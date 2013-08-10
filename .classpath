@@ -9,5 +9,6 @@
 	<classpathentry kind="lib" path="libs/androidplot-core-0.6.0.jar"/>
 	<classpathentry kind="lib" path="C:/Vikram Data/Android Development/NotificationsHistory/libs/GoogleAdMobAdsSdk-6.4.1.jar"/>
 	<classpathentry kind="lib" path="libs/GoogleAdMobAdsSdk-6.4.1.jar"/>
+	<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>

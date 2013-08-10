@@ -5,17 +5,35 @@
     android:orientation="horizontal"
     android:background="#FFFFFF"
     android:id="@+id/llId" >
+    
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="80" >
 
     <ImageView
         android:id="@+id/appImageViewId"
         android:layout_width="fill_parent"
-        android:layout_height="45dp"
+        android:layout_height="fill_parent"
         android:background="#FFFFFF"
-        android:src="@drawable/ic_launcher"
-        android:layout_weight="80"
+        android:src="@drawable/ic_launcher"        
         android:layout_gravity="left"
+        android:onClick="openApp"
          />
+    <TextView
+            android:id="@+id/unreadCountTextId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"            
+            android:text="33"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:background="#FF0000"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
+
+    </FrameLayout>
     <LinearLayout android:layout_width="fill_parent"
     				android:layout_height="wrap_content"
     				android:orientation="vertical"
@@ -68,6 +86,7 @@
         android:onClick="deleteAppNotifications"
         android:clickable="true"
          />
+
      
 
 </LinearLayout>

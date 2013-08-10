@@ -7,21 +7,20 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
-import java.util.TimeZone;
 
-import android.os.Bundle;
 import android.os.Handler;
-import android.os.Parcelable; 
+
 import android.provider.CallLog.Calls;
 import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
-import android.app.Activity;
+
+
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -30,12 +29,12 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
+
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityRecord;
 import android.widget.Toast;
 import android.widget.TextView;
+
 
 
 public class Notification_Service extends AccessibilityService {
@@ -47,6 +46,7 @@ public class Notification_Service extends AccessibilityService {
     BroadcastReceiver CallBlocker;
     private Context ctx;
     private static Boolean isOutgoingCall = false;
+    BroadcastReceiver mScreenReceiver = new ScreenReceiver();
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
@@ -79,9 +79,26 @@ public class Notification_Service extends AccessibilityService {
 	                    message += text + "\n";
 	                }
 	            }
+	            
+	            com.bun.notificationshistory.Notification nn = new com.bun.notificationshistory.Notification();
+	            nn.setPi(notification.contentIntent);
+	            if(Utils.notMap.get(event.getPackageName().toString()) != null){
+	            	nn.setNotificationCount(Utils.notMap.get(event.getPackageName().toString()).getNotificationCount() + 1);
+	            	Utils.notMap.remove(event.getPackageName().toString());
+	            }else{
+	            	nn.setNotificationCount(1);
+	            }
+	            Utils.notMap.put(event.getPackageName().toString(), nn);
+	            if(Utils.notMap.keySet().size() == 1){
+	            	startService(new Intent(this.getApplicationContext(), AppListnerService.class));
+	            }
+	            
+	            
             }catch(Exception e){
             	message = String.valueOf(event.getText());
             }
+            
+            
            
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             Calendar calendar = Calendar.getInstance();
@@ -106,11 +123,14 @@ public class Notification_Service extends AccessibilityService {
 			unregisterReceiver(CallBlocker);
 			CallBlocker = null;
 		}
+		unregisterReceiver(mScreenReceiver);
+		stopService(new Intent(this, AppListnerService.class));
 	}
 	
 	@Override
 	protected void onServiceConnected() {
 		try{
+			startService(new Intent(this.getApplicationContext(), AppListnerService.class));
 			refreshApplicationList();
 	        mLastMessage.clear();
 	        mLastTimeStamp.clear();
@@ -124,7 +144,12 @@ public class Notification_Service extends AccessibilityService {
 			//info.notificationTimeout = 100; 
 			//info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
 			//setServiceInfo(info);
+	        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+	        filter.addAction(Intent.ACTION_SCREEN_OFF);
 	        registerForLockCodeToUnhideAppIcon(this);
+	        mScreenReceiver = new ScreenReceiver();
+	        registerReceiver(mScreenReceiver, filter);
+	        
 		}catch(Exception e){
 			Log.e("NotificationHistory", "Failed to configure accessibility service", e);
 		}
@@ -254,6 +279,23 @@ public class Notification_Service extends AccessibilityService {
 
 	        }
 	    }
+	}
+	
+	public class ScreenReceiver extends BroadcastReceiver {
+	      
+	    
+	 
+	    @Override
+	    public void onReceive(Context context, Intent intent) {
+	        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+	            // DO WHATEVER YOU NEED TO DO HERE
+	        	stopService(new Intent(ctx, AppListnerService.class));
+	        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+	        	startService(new Intent(ctx, AppListnerService.class));
+	           
+	        }
+	    }
+	 
 	}
 	
 	private String getApplicationName(String packageName) {
