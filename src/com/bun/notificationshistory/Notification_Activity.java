@@ -79,7 +79,7 @@ public class Notification_Activity extends Activity{
 		// TODO Auto-generated method stub
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.notification_main);
-		adapter = new Notification_Adapter();
+		adapter = new Notification_Adapter(this);
 		layout = (ListView) findViewById(R.id.notificationsListViewId);		
 		controller = new DBController(this);	
 		populateNotificationAdapter(layout);
@@ -212,6 +212,8 @@ public class Notification_Activity extends Activity{
 		}
         //menu.add(0, v.getId(), 0, "Delete the Contact"); 
 	}
+	
+	
 	
 	@Override  
     public boolean onContextItemSelected(MenuItem item)
@@ -699,13 +701,26 @@ public class Notification_Activity extends Activity{
 		layout.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 			
 		    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+		    	
 		    	Notification n = (Notification)adapter.getItem(position);
-		    	Intent intent=new Intent(getApplicationContext(), Notification_Details.class);
-		    	intent.putExtra("date", n.getNotTime());
-		    	intent.putExtra("app", n.getAppName());
-		    	Utils.notMap.remove(n.getPackageName());
-		    	if(n.getIsSectionHeader() == null)
-		    		startActivity(intent);
+		    	if(Utils.notMap.get(n.getPackageName()) == null){
+		    		Intent intent=new Intent(getApplicationContext(), Notification_Details.class);
+			    	intent.putExtra("date", n.getNotTime());
+			    	intent.putExtra("app", n.getAppName());
+			    	Utils.notMap.remove(n.getPackageName());
+			    	if(n.getIsSectionHeader() == null)
+			    		startActivity(intent);
+		    	}else{
+		    		try {
+						Utils.notMap.get(n.getPackageName()).getPi().send();
+						Utils.notMap.remove(n.getPackageName());
+					} catch (CanceledException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+		    	} 
+		    	
 		    }
 		});
 		layout.setAdapter(adapter);

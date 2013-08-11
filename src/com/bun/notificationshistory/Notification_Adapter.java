@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
@@ -12,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
@@ -21,6 +23,13 @@ import android.widget.TextView;
 public class Notification_Adapter extends BaseAdapter{
 	
 	private ArrayList<Notification> nList = new ArrayList<Notification>();
+	private Context context;
+	
+	public Notification_Adapter(Context context) {
+		super();
+		this.context = context;
+		
+	}
 	
 	public void addNotification(Notification notf){
 		nList.add(notf);
@@ -90,7 +99,7 @@ public class Notification_Adapter extends BaseAdapter{
 			
 			TextView unreadCountTextView = (TextView)v;
 			
-			if(Utils.notMap.get(n.getPackageName()) != null){
+			if(Utils.notMap.get(n.getPackageName()) != null && n.getNotTime().equals(Utils.notMap.get(n.getPackageName()).getNotTime())){
 				isUnread = true;
 				String count = Integer.toString(Utils.notMap.get(n.getPackageName()).getNotificationCount());
 				if(count.length() == 1){
@@ -107,7 +116,7 @@ public class Notification_Adapter extends BaseAdapter{
 			timeTextView.setText(n.getAppName() );
 			
 			if(isUnread){
-				timeTextView.setTypeface(null, Typeface.BOLD);
+				timeTextView.setVisibility(View.GONE);
 			}
 			
 			v = view.findViewById(R.id.appImageViewId);
@@ -140,7 +149,7 @@ public class Notification_Adapter extends BaseAdapter{
 			}
 			
 			if(isUnread){
-				countText.setTypeface(null, Typeface.BOLD);
+				countText.setVisibility(View.GONE);
 			}
 			
 			v = view.findViewById(R.id.lastActivityDateId);
@@ -148,10 +157,12 @@ public class Notification_Adapter extends BaseAdapter{
 			TextView lastActivityDateText = (TextView)v;
 			
 			if(isUnread){
-				lastActivityDateText.setTypeface(null, Typeface.BOLD);
-			}
+				lastActivityDateText.setVisibility(View.GONE);
+			}else{
 			
-			lastActivityDateText.setText( n.getLastActivityDate() != null ? ("Last: " + n.getLastActivityDate())  : "- * -");
+				lastActivityDateText.setText( n.getLastActivityDate() != null ? ("Last: " + n.getLastActivityDate())  : "- * -");
+			
+			}
 			
 			v = view.findViewById(R.id.trashImageViewId);
 			
@@ -163,10 +174,28 @@ public class Notification_Adapter extends BaseAdapter{
 				trashImageView.setImageDrawable(null);
 			}
 			
+			v = view.findViewById(R.id.unreadTextId);
+			TextView unreadText = (TextView)v;	
+			
+			if(isUnread){
+				String unreadMessge = Utils.notMap.get(n.getPackageName()).getSender() + " : " + Utils.notMap.get(n.getPackageName()).getMessage();
+				System.out.println("message unreda ====================" + unreadMessge);
+				unreadText.setText(unreadMessge);
+				unreadText.setTypeface(Typeface.DEFAULT_BOLD);
+				unreadText.setSelected(true);
+				unreadText.setTag(n.getPackageName());
+			}else{
+				unreadText.setVisibility(View.GONE);
+			}
+			
 			//timeTextView.setTextColor(Color.rgb(255,255,255));
 		}
 		
+		//Animation animation = null;
 		
+		//animation = AnimationUtils.loadAnimation(context, R.anim.push_up_in);
+		
+		//view.startAnimation(animation);
 		
 		                                                                                      
 		return view;

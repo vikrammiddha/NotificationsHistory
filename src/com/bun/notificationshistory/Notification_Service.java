@@ -1,12 +1,16 @@
 package com.bun.notificationshistory;
 
+import java.lang.reflect.Field;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 
 import android.os.Handler;
 
@@ -32,12 +36,13 @@ import android.view.LayoutInflater;
 
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.RemoteViews;
 import android.widget.Toast;
 import android.widget.TextView;
 
 
 
-public class Notification_Service extends AccessibilityService {
+public class Notification_Service extends AccessibilityService { 
 	
 	HashMap<String, String> mInstalledApplications = new HashMap<String, String>();
     HashMap<String, String> mLastMessage = new HashMap<String, String>();
@@ -50,6 +55,8 @@ public class Notification_Service extends AccessibilityService {
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
+		
+		
 		try{
 			HashMap<String,String> dbMap = new HashMap<String,String>();
 			String message = "";
@@ -71,13 +78,40 @@ public class Notification_Service extends AccessibilityService {
 	            notification.contentView.reapply(getApplicationContext(), localView);
 	            
 	            ArrayList<TextView> views = new ArrayList<TextView>();
+	            
 	            getAllTextView(views, localView);
+	            
 	            for (TextView v: views) {
 	                String text = v.getText().toString();
 	                if (!text.isEmpty()) {
 	                    Log.d("Notification_History", "[Text]                " + text);
 	                    message += text + "\n";
 	                }
+	            }
+	            
+	            String addInfo = "";
+	            if(event.getPackageName().toString().equals("com.whatsapp")){
+	            	addInfo = Utils.getAppSpecificMessage(event.getPackageName().toString(), notification); 
+	            }else if(event.getPackageName().toString().equals("com.google.android.gm")){
+	            	addInfo = Utils.getAppSpecificMessage(event.getPackageName().toString(), notification); 
+	            }else if(event.getPackageName().toString().equals("com.android.email")){
+	            	addInfo = Utils.getAppSpecificMessage(event.getPackageName().toString(), notification);
+	            }                
+	            
+	            for (TextView v: views) {
+	                String text = v.getText().toString();
+	                if (!text.isEmpty()) {
+	                    Log.d("Notification_History", "[Text]                " + text);
+	                    message += text + "\n";
+	                }
+	            }	            
+	            
+	            if(!addInfo.equals("")){
+	            	dbMap.put("message", addInfo);
+	            	dbMap.put("additionalInfo", addInfo);
+	            }else{
+	            	dbMap.put("message", String.valueOf(event.getText()));
+	            	dbMap.put("additionalInfo", message);
 	            }
 	            
 	            com.bun.notificationshistory.Notification nn = new com.bun.notificationshistory.Notification();
@@ -88,6 +122,11 @@ public class Notification_Service extends AccessibilityService {
 	            }else{
 	            	nn.setNotificationCount(1);
 	            }
+	            
+	            com.bun.notificationshistory.Notification dataNN = Utils.getNotificationData(dbMap, ctx, false);
+	            nn.setSender(dataNN.getSender());
+	            nn.setMessage(dataNN.getMessage());
+	            nn.setNotTime(date);
 	            Utils.notMap.put(event.getPackageName().toString(), nn);
 	            if(Utils.notMap.keySet().size() == 1){
 	            	startService(new Intent(this.getApplicationContext(), AppListnerService.class));
@@ -107,15 +146,16 @@ public class Notification_Service extends AccessibilityService {
            
             
             dbMap.put("notDate", formattedDate);
-            dbMap.put("message", String.valueOf(event.getText()));
-            dbMap.put("additionalInfo", message);
+            
+            
             Log.d("Notification_History", "Total Records in DB till now :" + controller.getAllNotifications().size());
             if((message != null && !message.equals("[]")) && !("[]".equals(event.getText())))
             	controller.insertNotification(dbMap, this);
 		}catch(Exception e){
 			 Log.e("NotificationHistory", "Exception in Handlingthe Event : " + e);
 		}
-	   }
+
+	}
 	@Override
 	public void onInterrupt() {
 		if (CallBlocker != null)
@@ -155,6 +195,8 @@ public class Notification_Service extends AccessibilityService {
 		}
       
      }
+	
+	
 	
 	private void registerForLockCodeToUnhideAppIcon(final Context ctx){
 		CallBlocker =new BroadcastReceiver()

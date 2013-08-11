@@ -193,7 +193,7 @@ public class DBController  extends SQLiteOpenHelper {
   
   public HashMap<String,Integer> getPieGraphData(){
 	  	
-	    String selectQuery = "SELECT appName,count(*) from not_hist group by  appName ";
+	    String selectQuery = "SELECT appName,count(*) from not_hist where appName not in (Select appName from ignore_list )  group by  appName  ";
 	    SQLiteDatabase database = this.getWritableDatabase();
 	    Cursor cursor = database.rawQuery(selectQuery, null);
 	    
@@ -246,7 +246,7 @@ public class DBController  extends SQLiteOpenHelper {
   public ArrayList<String> getTopTenApps(){
 	  ArrayList<String> wordList;
 	    wordList = new ArrayList<String>();
-	    String selectQuery = "SELECT appName,count(*) from not_hist group by appName order by count(*) desc limit 10";
+	    String selectQuery = "SELECT appName,count(*) from not_hist  where appName not in (Select appName from ignore_list ) group by appName order by count(*) desc limit 10 ";
 	    SQLiteDatabase database = this.getWritableDatabase();
 	    Cursor cursor = database.rawQuery(selectQuery, null);
 	    
