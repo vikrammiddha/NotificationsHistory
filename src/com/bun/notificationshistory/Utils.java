@@ -154,9 +154,9 @@ public class Utils {
 			}
         	 
         }else if(packageName.equals("com.google.android.gm")){
-        	message = raw.get(3) + ":\n\n" +  raw.get(4); 
+        	message = raw.get(0) + ":\n\n" +  raw.get(4); 
         }else if(packageName.equals("com.android.email")){
-        	message = raw.get(3) + ":\n\n" +  raw.get(4);
+        	message = raw.get(0) + ":\n\n" +  raw.get(4);
         }
 		
 		
