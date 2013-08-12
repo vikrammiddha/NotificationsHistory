@@ -159,11 +159,14 @@ public class Notification_Service extends AccessibilityService {
 	}
 	@Override
 	public void onInterrupt() {
-		if (CallBlocker != null)
-		{
-			unregisterReceiver(CallBlocker);
-			CallBlocker = null;
-		}
+		//unregisterReceiver(CallBlocker);
+		//unregisterReceiver(mScreenReceiver);
+		stopService(new Intent(this, AppListnerService.class));
+		
+	}
+	
+	public void onDestroy(){
+		unregisterReceiver(CallBlocker);
 		unregisterReceiver(mScreenReceiver);
 		stopService(new Intent(this, AppListnerService.class));
 	}

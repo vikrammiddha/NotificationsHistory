@@ -255,6 +255,8 @@ public class Notification_Activity extends Activity{
 		
 		unregisterReceiver(mReceiver);
 		
+		//finish();
+		
 	}
 	
 	@Override

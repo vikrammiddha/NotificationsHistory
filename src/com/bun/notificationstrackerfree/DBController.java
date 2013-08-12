@@ -74,7 +74,7 @@ public class DBController  extends SQLiteOpenHelper {
 		for(String app : appSet){			
 			database.delete("ignore_list",  "appName = ?" , new String[] { app });			
 		}
-		  
+		database.close();  
   }
   
   public void deleteAppNotifications(String app){
@@ -93,6 +93,7 @@ public class DBController  extends SQLiteOpenHelper {
 	    		ignoredApps.add(cursor.getString(0));	        
 	      } while (cursor.moveToNext());
 	    }
+	    database.close();
 	    return ignoredApps;
   }
   
@@ -108,6 +109,7 @@ public class DBController  extends SQLiteOpenHelper {
 	    		retMap.put(cursor.getString(0), cursor.getString(1));	    		
 	      } while (cursor.moveToNext());
 	    }
+	    database.close();
 	    return retMap;
 	  
   }
@@ -145,6 +147,7 @@ public class DBController  extends SQLiteOpenHelper {
     	values.put("value", queryValues.get(key));
     	k = key; 
     }
+    database.close();
     return database.update("preferences", values, "key" + " = ?", new String[] { k });
   }
  
@@ -188,6 +191,7 @@ public class DBController  extends SQLiteOpenHelper {
 	        wordList.add(map);
 	      } while (cursor.moveToNext());
 	    }
+	    database.close();
 	    return wordList;
   }
   
@@ -217,6 +221,7 @@ public class DBController  extends SQLiteOpenHelper {
 	        
 	      } while (cursor.moveToNext());
 	    }
+	    database.close();
 	    return map;
 }
   
@@ -240,6 +245,7 @@ public class DBController  extends SQLiteOpenHelper {
 	        
 	      } while (cursor.moveToNext());
 	    }
+	    database.close();
 	    return wordList;		
   }
   
@@ -261,6 +267,7 @@ public class DBController  extends SQLiteOpenHelper {
 	        
 	      } while (cursor.moveToNext());
 	    }
+	    database.close();
 	    return wordList;		
   }
   
@@ -291,6 +298,7 @@ public class DBController  extends SQLiteOpenHelper {
         wordList.add(map);
       } while (cursor.moveToNext());
     }
+    database.close();
     return wordList;
   }
   
@@ -307,6 +315,7 @@ public class DBController  extends SQLiteOpenHelper {
     	        
       } while (cursor.moveToNext());
     }
+    database.close();
     return prefMap;
   }
   
@@ -345,6 +354,7 @@ public class DBController  extends SQLiteOpenHelper {
 	        wordList.add(map);
 	      } while (cursor.moveToNext());
 	    }
+	    database.close();
 	    return wordList;
 	  }
  
@@ -352,6 +362,7 @@ public class DBController  extends SQLiteOpenHelper {
   		
 	    SQLiteDatabase database = this.getWritableDatabase();
 	    database.delete("not_hist", null, null);
+	    database.close();
   	}
 
   	public void populateDefaultPreferences(SQLiteDatabase database){
@@ -369,7 +380,9 @@ public class DBController  extends SQLiteOpenHelper {
 		    values.clear();
 		}
 	    
-		
+		database.close();
 		//database.insert("preferences", null, values);
 	}
+  	
+  	
 }
