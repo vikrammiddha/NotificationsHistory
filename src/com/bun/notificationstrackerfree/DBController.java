@@ -64,7 +64,7 @@ public class DBController  extends SQLiteOpenHelper {
 		    database.insert("ignore_list", null, values);
 		    values.clear();
 	    }
-	    database.close();
+	    //database.close();
 	    //context.sendBroadcast(new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
   }
   
@@ -74,12 +74,12 @@ public class DBController  extends SQLiteOpenHelper {
 		for(String app : appSet){			
 			database.delete("ignore_list",  "appName = ?" , new String[] { app });			
 		}
-		database.close();  
+		//database.close();  
   }
   
   public void deleteAppNotifications(String app){
 	  SQLiteDatabase database = this.getWritableDatabase();	
-	  database.delete("not_hist",  "packageName = ?" , new String[] { app });	
+	  //database.delete("not_hist",  "packageName = ?" , new String[] { app });	
   }
   
   public HashSet<String> getAllIgnoredApps(){
@@ -93,7 +93,8 @@ public class DBController  extends SQLiteOpenHelper {
 	    		ignoredApps.add(cursor.getString(0));	        
 	      } while (cursor.moveToNext());
 	    }
-	    database.close();
+	    cursor.close();
+	    //database.close();
 	    return ignoredApps;
   }
   
@@ -109,7 +110,8 @@ public class DBController  extends SQLiteOpenHelper {
 	    		retMap.put(cursor.getString(0), cursor.getString(1));	    		
 	      } while (cursor.moveToNext());
 	    }
-	    database.close();
+	    cursor.close();
+	    //database.close();
 	    return retMap;
 	  
   }
@@ -124,7 +126,7 @@ public class DBController  extends SQLiteOpenHelper {
     values.put("packageName", queryValues.get("packageName"));
     values.put("additionalInfo", queryValues.get("additionalInfo"));
     database.insert("not_hist", null, values);
-    database.close();
+    //database.close();
     context.sendBroadcast(new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
   }
   
@@ -135,7 +137,7 @@ public class DBController  extends SQLiteOpenHelper {
     values.put("value", queryValues.get("value"));
     
     database.insert("preferences", null, values);
-    database.close();
+    //database.close();
     context.sendBroadcast(new Intent(DatabaseChangedReceiver.ACTION_DATABASE_CHANGED));
   }
  
@@ -147,7 +149,7 @@ public class DBController  extends SQLiteOpenHelper {
     	values.put("value", queryValues.get(key));
     	k = key; 
     }
-    database.close();
+    //database.close();
     return database.update("preferences", values, "key" + " = ?", new String[] { k });
   }
  
@@ -191,7 +193,8 @@ public class DBController  extends SQLiteOpenHelper {
 	        wordList.add(map);
 	      } while (cursor.moveToNext());
 	    }
-	    database.close();
+	    cursor.close();
+	    //database.close();
 	    return wordList;
   }
   
@@ -221,7 +224,8 @@ public class DBController  extends SQLiteOpenHelper {
 	        
 	      } while (cursor.moveToNext());
 	    }
-	    database.close();
+	    cursor.close();
+	    //database.close();
 	    return map;
 }
   
@@ -245,7 +249,8 @@ public class DBController  extends SQLiteOpenHelper {
 	        
 	      } while (cursor.moveToNext());
 	    }
-	    database.close();
+	    cursor.close();
+	    //database.close();
 	    return wordList;		
   }
   
@@ -267,7 +272,8 @@ public class DBController  extends SQLiteOpenHelper {
 	        
 	      } while (cursor.moveToNext());
 	    }
-	    database.close();
+	    cursor.close();
+	    //database.close();
 	    return wordList;		
   }
   
@@ -298,7 +304,8 @@ public class DBController  extends SQLiteOpenHelper {
         wordList.add(map);
       } while (cursor.moveToNext());
     }
-    database.close();
+    cursor.close();
+    //database.close();
     return wordList;
   }
   
@@ -315,7 +322,8 @@ public class DBController  extends SQLiteOpenHelper {
     	        
       } while (cursor.moveToNext());
     }
-    database.close();
+    cursor.close();
+    //database.close();
     return prefMap;
   }
   
@@ -354,7 +362,8 @@ public class DBController  extends SQLiteOpenHelper {
 	        wordList.add(map);
 	      } while (cursor.moveToNext());
 	    }
-	    database.close();
+	    cursor.close();
+	    //database.close();
 	    return wordList;
 	  }
  
@@ -362,7 +371,7 @@ public class DBController  extends SQLiteOpenHelper {
   		
 	    SQLiteDatabase database = this.getWritableDatabase();
 	    database.delete("not_hist", null, null);
-	    database.close();
+	    //database.close();
   	}
 
   	public void populateDefaultPreferences(SQLiteDatabase database){
@@ -380,7 +389,7 @@ public class DBController  extends SQLiteOpenHelper {
 		    values.clear();
 		}
 	    
-		database.close();
+		//database.close();
 		//database.insert("preferences", null, values);
 	}
   	
