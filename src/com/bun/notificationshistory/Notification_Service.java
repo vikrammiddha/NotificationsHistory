@@ -135,6 +135,7 @@ public class Notification_Service extends AccessibilityService {
 	            
             }catch(Exception e){
             	message = String.valueOf(event.getText());
+            	return;
             }
             
             
@@ -158,11 +159,12 @@ public class Notification_Service extends AccessibilityService {
 	}
 	@Override
 	public void onInterrupt() {
-		if (CallBlocker != null)
-		{
-			unregisterReceiver(CallBlocker);
-			CallBlocker = null;
-		}
+		
+		stopService(new Intent(this, AppListnerService.class));
+	}
+	
+	public void onDestroy(){
+		unregisterReceiver(CallBlocker);
 		unregisterReceiver(mScreenReceiver);
 		stopService(new Intent(this, AppListnerService.class));
 	}

@@ -111,9 +111,8 @@ public class Notification_Activity extends Activity{
 			controller.updatePreferences(prefMap);
 			
 		}
-		registerForContextMenu(layout);
-		
-		startService(new Intent(this, AppListnerService.class));		  
+		registerForContextMenu(layout);		
+			  
 		//registerForLockCodeToUnhideAppIcon();
         	
 	}

@@ -83,7 +83,7 @@
         android:gravity="center"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="#0F1A5E" 
-        android:layout_weight="85"
+        android:layout_weight="80"
         android:paddingRight="10dp"
         />
      
@@ -94,7 +94,7 @@
         android:layout_width="fill_parent"
         android:layout_height="25dp"
         android:background="#FFFFFF"        
-        android:layout_weight="85"
+        android:layout_weight="90"
         android:layout_gravity="center"
         android:src="@drawable/trash"
         android:onClick="deleteAppNotifications"
