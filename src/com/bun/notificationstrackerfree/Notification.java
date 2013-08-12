@@ -1,11 +1,22 @@
 package com.bun.notificationstrackerfree;
 
+import java.io.Serializable;
+
+import android.app.PendingIntent;
 import android.graphics.drawable.Drawable;
 
-public class Notification {
-	
+public class Notification implements Serializable{
+
+	PendingIntent pi;
+
+	public PendingIntent getPi() {
+		return pi;
+	}
+	public void setPi(PendingIntent pi) {
+		this.pi = pi;
+	}
 	Boolean isRowChecked;
-	
+
 	public Boolean getIsRowChecked() {
 		return isRowChecked;
 	}
@@ -13,7 +24,7 @@ public class Notification {
 		this.isRowChecked = isRowChecked;
 	}
 	String sender;
-	
+
 	public String getSender() {
 		return sender;
 	}
@@ -21,7 +32,7 @@ public class Notification {
 		this.sender = sender;
 	}
 	String lastActivityDate;
-	
+
 	public String getLastActivityDate() {
 		return lastActivityDate;
 	}
@@ -29,7 +40,7 @@ public class Notification {
 		this.lastActivityDate = lastActivityDate;
 	}
 	Drawable appIcon;
-	
+
 	public Drawable getAppIcon() {
 		return appIcon;
 	}
@@ -37,7 +48,7 @@ public class Notification {
 		this.appIcon = appIcon;
 	}
 	private Integer notificationCount;
-	
+
 	public Integer getNotificationCount() {
 		return notificationCount;
 	}

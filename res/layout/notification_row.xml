@@ -5,21 +5,51 @@
     android:orientation="horizontal"
     android:background="#FFFFFF"
     android:id="@+id/llId" >
+    
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="45dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="80" >
 
     <ImageView
         android:id="@+id/appImageViewId"
         android:layout_width="fill_parent"
-        android:layout_height="45dp"
+        android:layout_height="fill_parent"
         android:background="#FFFFFF"
-        android:src="@drawable/ic_launcher"
-        android:layout_weight="80"
+        android:src="@drawable/ic_launcher"        
         android:layout_gravity="left"
+        android:onClick="openApp"
          />
+    <TextView
+            android:id="@+id/unreadCountTextId"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"            
+            android:text="33"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:background="#FF0000"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
 
+
+    </FrameLayout>
+    <FrameLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_weight="20" >
+    
+     <LinearLayout android:layout_width="fill_parent"
+    				android:layout_height="wrap_content"
+    				android:orientation="horizontal"
+    				android:layout_weight="1">
+    
     <LinearLayout android:layout_width="fill_parent"
     				android:layout_height="wrap_content"
     				android:orientation="vertical"
-    				android:layout_weight="50">
+    				android:layout_weight="30"
+    				>
 	    <TextView
 	        android:id="@+id/notificationRowTextViewId"
 	        android:layout_width="fill_parent"
@@ -29,9 +59,9 @@
 	        android:gravity="left"
 	        android:textAppearance="?android:attr/textAppearanceSmall"
 	        android:textColor="#0F1A5E"
-	        
+
 	         />
-	    
+
 	    <TextView
 	        android:id="@+id/lastActivityDateId"
 	        android:layout_width="fill_parent"
@@ -42,7 +72,7 @@
 	        android:textAppearance="?android:attr/textAppearanceSmall"
 	        android:textColor="#0F1A5E"
 	        android:layout_weight="50"/>
-	         
+
     </LinearLayout>
      <TextView
         android:id="@+id/notificationCountId"
@@ -57,6 +87,8 @@
         android:paddingRight="10dp"
         />
      
+    
+     
      <ImageView
         android:id="@+id/trashImageViewId"
         android:layout_width="fill_parent"
@@ -69,5 +101,24 @@
         android:clickable="true"
          />
      
+      </LinearLayout>
+
+     <TextView
+        android:id="@+id/unreadTextId"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#FFFFFF"
+        android:text="Row"        
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:textColor="#0F1A5E" 
+        android:layout_weight="85"
+        android:paddingRight="10dp"
+        android:singleLine="true" 
+	    android:ellipsize="marquee"
+	    android:marqueeRepeatLimit ="marquee_forever"
+	    android:scrollHorizontally="true"	    
+	    android:onClick="openApp"
+        />
+     </FrameLayout>
 
 </LinearLayout>

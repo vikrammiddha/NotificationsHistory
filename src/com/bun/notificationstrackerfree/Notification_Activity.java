@@ -9,11 +9,8 @@ import java.util.LinkedHashMap;
 import com.android.internal.telephony.ITelephony;
 import com.bun.notificationstrackerfree.R;
 
-import com.google.ads.AdView;
-
-
-
 import android.app.Activity;
+import android.app.PendingIntent.CanceledException;
 
 import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
@@ -30,6 +27,7 @@ import android.graphics.drawable.Drawable;
 
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.CallLog;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 
@@ -45,9 +43,8 @@ import android.view.View;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.ViewGroup;
 
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -566,6 +563,44 @@ public class Notification_Activity extends Activity{
 		alertDialog2.show();
 	}
 	
+	public void openApp(View view){
+
+		String packageName = view.getTag().toString();
+
+		Log.d("notMap============", String.valueOf(Utils.notMap.size()));
+
+		if(Utils.notMap.get(packageName) != null){
+			try {
+				Utils.notMap.get(packageName).getPi().send();
+				Utils.notMap.remove(packageName);
+			} catch (CanceledException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}else{
+			try{
+				Intent i = null;
+				Log.d("packagename============", packageName);
+				if(packageName.equals("com.google.android.gsf")){
+					packageName = "com.google.android.talk";
+				}else if(packageName.equals("com.android.phone")){
+					i = new Intent();
+					i.setAction(Intent.ACTION_VIEW);
+					i.setType(CallLog.Calls.CONTENT_TYPE);
+
+				}
+				if(i == null)
+					i = getApplicationContext().getPackageManager().getLaunchIntentForPackage(packageName);
+			    ctx.startActivity(i);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+		}
+
+
+	}
+
+	
 	public void deleteAppNotifications(final View view){
 		
 		String appName = view.getTag().toString().split("##")[0];
@@ -617,7 +652,7 @@ public class Notification_Activity extends Activity{
 		        Notification_Activity.this);
 
 		// Setting Dialog Title
-		alertDialog2.setTitle("Notifications Spy service");
+		alertDialog2.setTitle("Notifications Tracker service");
 
 		// Setting Dialog Message
 		alertDialog2.setMessage(R.string.service_warning);
@@ -665,14 +700,39 @@ public class Notification_Activity extends Activity{
 			
 		    public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 		    	Notification n = (Notification)adapter.getItem(position);
-		    	Intent intent=new Intent(getApplicationContext(), Notification_Details.class);
-		    	intent.putExtra("date", n.getNotTime());
-		    	intent.putExtra("app", n.getAppName());
-		    	if(n.getIsSectionHeader() == null)
-		    		startActivity(intent);
+		    	if(Utils.notMap.get(n.getPackageName()) == null){
+		    		Intent intent=new Intent(getApplicationContext(), Notification_Details.class);
+			    	intent.putExtra("date", n.getNotTime());
+			    	intent.putExtra("app", n.getAppName());
+			    	Utils.notMap.remove(n.getPackageName());
+			    	if(n.getIsSectionHeader() == null)
+			    		startActivity(intent);
+		    	}else{
+		    		try {
+						Utils.notMap.get(n.getPackageName()).getPi().send();
+						Utils.notMap.remove(n.getPackageName());
+					} catch (CanceledException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+		    	} 
 		    }
 		});
 		layout.setAdapter(adapter);
+		
+		try{
+			Button clearButton = (Button)findViewById(R.id.clearUnreadNotsId);
+			if(Utils.notMap.size() == 0){
+				clearButton.setVisibility(View.GONE);
+			}
+			else{
+				clearButton.setVisibility(View.VISIBLE);
+			}
+
+        }catch(Exception e){
+        	e.printStackTrace();
+        }
 		
 	}
 	
@@ -958,6 +1018,15 @@ public class Notification_Activity extends Activity{
     	layout.setAdapter(adapter);
 		
 	}
+	
+	public void clearNotifications(View view){
+		Utils.notMap.clear();
+		adapter.clearNotifications();
+        populateNotificationAdapter(layout);
+        adapter.notifyDataSetChanged();
+        view.setVisibility(View.GONE);
+	}
+
 		
 
 }

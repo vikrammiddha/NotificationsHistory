@@ -12,8 +12,19 @@
 		android:layout_height="fill_parent" 
 		android:divider="#0C0A42"
 		android:dividerHeight="3px"
-		android:layout_weight="10"
+		android:layout_weight="20"
 		/>
+    
+      <Button
+        android:id="@+id/clearUnreadNotsId"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_weight="90"
+        
+        android:text="Clear Unread Notifications"
+        android:onClick="clearNotifications"
+        android:layout_gravity="center"
+        />
     
     <com.google.ads.AdView android:id="@+id/adView1"
                          android:layout_width="fill_parent"

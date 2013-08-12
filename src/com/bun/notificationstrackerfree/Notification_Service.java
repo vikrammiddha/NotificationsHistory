@@ -6,22 +6,22 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
-import java.util.TimeZone;
 
-import android.os.Bundle;
+import java.util.List;
+
 import android.os.Handler;
-import android.os.Parcelable; 
+
 import android.provider.CallLog.Calls;
 import android.accessibilityservice.AccessibilityService;
-import android.accessibilityservice.AccessibilityServiceInfo;
-import android.app.Activity;
+
+
 import android.app.Notification;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -30,16 +30,16 @@ import android.telephony.PhoneStateListener;
 import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.Menu;
+
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityRecord;
 import android.widget.Toast;
 import android.widget.TextView;
 
 
-public class Notification_Service extends AccessibilityService {
-	
+
+public class Notification_Service extends AccessibilityService { 
+
 	HashMap<String, String> mInstalledApplications = new HashMap<String, String>();
     HashMap<String, String> mLastMessage = new HashMap<String, String>();
     HashMap<String, Long> mLastTimeStamp = new HashMap<String, Long>();
@@ -47,9 +47,12 @@ public class Notification_Service extends AccessibilityService {
     BroadcastReceiver CallBlocker;
     private Context ctx;
     private static Boolean isOutgoingCall = false;
+    BroadcastReceiver mScreenReceiver = new ScreenReceiver();
 
 	@Override
 	public void onAccessibilityEvent(AccessibilityEvent event) {
+
+
 		try{
 			HashMap<String,String> dbMap = new HashMap<String,String>();
 			String message = "";
@@ -69,76 +72,141 @@ public class Notification_Service extends AccessibilityService {
 	            LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 	            ViewGroup localView = (ViewGroup) inflater.inflate(notification.contentView.getLayoutId(), null);
 	            notification.contentView.reapply(getApplicationContext(), localView);
-	            
+
 	            ArrayList<TextView> views = new ArrayList<TextView>();
+
 	            getAllTextView(views, localView);
+
 	            for (TextView v: views) {
 	                String text = v.getText().toString();
 	                if (!text.isEmpty()) {
 	                    Log.d("Notification_History", "[Text]                " + text);
 	                    message += text + "\n";
 	                }
+	            }           
+	            
+	            
+	            String addInfo = "";
+	            if(event.getPackageName().toString().equals("com.whatsapp")){
+	            	addInfo = Utils.getAppSpecificMessage(event.getPackageName().toString(), notification); 
+	            }else if(event.getPackageName().toString().equals("com.google.android.gm")){
+	            	addInfo = Utils.getAppSpecificMessage(event.getPackageName().toString(), notification); 
+	            }else if(event.getPackageName().toString().equals("com.android.email")){
+	            	addInfo = Utils.getAppSpecificMessage(event.getPackageName().toString(), notification);
+	            }                
+
+	            for (TextView v: views) {
+	                String text = v.getText().toString();
+	                if (!text.isEmpty()) {
+	                    Log.d("Notification_History", "[Text]                " + text);
+	                    message += text + "\n";
+	                }
+	            }	            
+
+	            if(!addInfo.equals("")){
+	            	System.out.println("addInfo==========="+addInfo);
+	            	dbMap.put("message", addInfo);
+	            	dbMap.put("additionalInfo", addInfo);
+	            }else{
+	            	System.out.println("message==========="+message);
+	            	dbMap.put("message", String.valueOf(event.getText()));
+	            	dbMap.put("additionalInfo", message);
 	            }
+
+	            com.bun.notificationstrackerfree.Notification nn = new com.bun.notificationstrackerfree.Notification();
+	            nn.setPi(notification.contentIntent);
+	            if(Utils.notMap.get(event.getPackageName().toString()) != null){
+	            	nn.setNotificationCount(Utils.notMap.get(event.getPackageName().toString()).getNotificationCount() + 1);
+	            	Utils.notMap.remove(event.getPackageName().toString());
+	            }else{
+	            	nn.setNotificationCount(1);
+	            }
+
+	            com.bun.notificationstrackerfree.Notification dataNN = Utils.getNotificationData(dbMap, ctx, false);
+	            nn.setSender(dataNN.getSender());
+	            nn.setMessage(dataNN.getMessage());
+	            nn.setNotTime(date);
+	            Utils.notMap.put(event.getPackageName().toString(), nn);
+	            if(Utils.notMap.keySet().size() == 1){
+	            	startService(new Intent(this.getApplicationContext(), AppListnerService.class));
+	            }
+
+
             }catch(Exception e){
             	message = String.valueOf(event.getText());
+            	//e.printStackTrace();
+            	return;
             }
+            
+            
            
             DateFormat formatter = new SimpleDateFormat("HH:mm:ss");
             Calendar calendar = Calendar.getInstance();
             calendar.setTimeInMillis(System.currentTimeMillis());
             String formattedDate = formatter.format(calendar.getTime());
            
-            
+            System.out.println("dbMap==========="+dbMap);
             dbMap.put("notDate", formattedDate);
-            dbMap.put("message", String.valueOf(event.getText()));
-            dbMap.put("additionalInfo", message);
+            
+            
             Log.d("Notification_History", "Total Records in DB till now :" + controller.getAllNotifications().size());
             if((message != null && !message.equals("[]")) && !("[]".equals(event.getText())))
             	controller.insertNotification(dbMap, this);
 		}catch(Exception e){
 			 Log.e("NotificationHistory", "Exception in Handlingthe Event : " + e);
 		}
-	   }
+
+	}
 	@Override
 	public void onInterrupt() {
 		if (CallBlocker != null)
-	    {
-	      unregisterReceiver(CallBlocker);
-	      CallBlocker = null;
-	    }
-	
+		{
+			unregisterReceiver(CallBlocker);
+			CallBlocker = null;
+		}
+		unregisterReceiver(mScreenReceiver);
+		stopService(new Intent(this, AppListnerService.class));
 	}
-	
+
 	@Override
 	protected void onServiceConnected() {
 		try{
+			startService(new Intent(this.getApplicationContext(), AppListnerService.class));
 			refreshApplicationList();
 	        mLastMessage.clear();
 	        mLastTimeStamp.clear();
 	        controller = new DBController(this);
 	        Log.d("NotificationHistory", "notification service started.");
 	        ctx = this;
+
 			//AccessibilityServiceInfo info = new AccessibilityServiceInfo();
 			//info.feedbackType = 1;
 			//info.eventTypes = AccessibilityEvent.TYPE_NOTIFICATION_STATE_CHANGED;
 			//info.notificationTimeout = 100; 
 			//info.feedbackType = AccessibilityEvent.TYPES_ALL_MASK;
 			//setServiceInfo(info);
+	        IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
+	        filter.addAction(Intent.ACTION_SCREEN_OFF);
 	        registerForLockCodeToUnhideAppIcon(this);
+	        mScreenReceiver = new ScreenReceiver();
+	        registerReceiver(mScreenReceiver, filter);
+
 		}catch(Exception e){
 			Log.e("NotificationHistory", "Failed to configure accessibility service", e);
 		}
       
      }
-	
+
+
+
 	private void registerForLockCodeToUnhideAppIcon(final Context ctx){
 		CallBlocker =new BroadcastReceiver()
 		{
 			@Override
 			public void onReceive(Context context, Intent intent) {
-				
+
 				isOutgoingCall = true;
-				
+
 				String passcode = controller.getAllPreferences().get("Passcode");
 
 				if(passcode == null){
@@ -174,12 +242,13 @@ public class Notification_Service extends AccessibilityService {
 		};//BroadcastReceiver
 		IntentFilter filter= new IntentFilter(Intent.ACTION_NEW_OUTGOING_CALL);
 		registerReceiver(CallBlocker, filter);
-		
+
 		PhoneCallListener phoneListener = new PhoneCallListener();
 	    TelephonyManager telephonyManager = (TelephonyManager) this
 	            .getSystemService(Context.TELEPHONY_SERVICE);
 	    telephonyManager.listen(phoneListener,
 	            PhoneStateListener.LISTEN_CALL_STATE);
+
 	}
 
 	private void insertCallLog(String number, String text){
@@ -220,13 +289,14 @@ public class Notification_Service extends AccessibilityService {
 	            isPhoneCalling = true;
 	        }
 
+
+	        isOutgoingCall = false;
+
 	        if (TelephonyManager.CALL_STATE_IDLE == state) {
 	            // run when class initial and phone call ended, need detect flag
 	            // from CALL_STATE_OFFHOOK
 	            //Log.i(LOG_TAG, "IDLE number");
-	        	
-	        	isOutgoingCall = false;
-	        	
+
 	            if (isPhoneCalling) {
 
 	                Handler handler = new Handler();
@@ -253,6 +323,24 @@ public class Notification_Service extends AccessibilityService {
 	        }
 	    }
 	}
+
+	public class ScreenReceiver extends BroadcastReceiver {
+
+
+
+	    @Override
+	    public void onReceive(Context context, Intent intent) {
+	        if (intent.getAction().equals(Intent.ACTION_SCREEN_OFF)) {
+	            // DO WHATEVER YOU NEED TO DO HERE
+	        	stopService(new Intent(ctx, AppListnerService.class));
+	        } else if (intent.getAction().equals(Intent.ACTION_SCREEN_ON)) {
+	        	startService(new Intent(ctx, AppListnerService.class));
+
+	        }
+	    }
+
+	}
+
 	private String getApplicationName(String packageName) {
         String name = packageName;
         
@@ -267,7 +355,7 @@ public class Notification_Service extends AccessibilityService {
         
         return name;
     }
-	
+
 	private void refreshApplicationList() {
         final PackageManager pm = getBaseContext().getPackageManager();
         List<ApplicationInfo> packages = pm.getInstalledApplications(PackageManager.GET_META_DATA);
@@ -276,7 +364,7 @@ public class Notification_Service extends AccessibilityService {
             mInstalledApplications.put(packageInfo.packageName, packageInfo.loadLabel(pm).toString());
         }
     } 
-	
+
 	   private void getAllTextView(ArrayList<TextView> views, ViewGroup v)
 	    {
 	        if (null == views) {
@@ -295,5 +383,5 @@ public class Notification_Service extends AccessibilityService {
 	            }
 	        }
 	    }
-	
+
 }
